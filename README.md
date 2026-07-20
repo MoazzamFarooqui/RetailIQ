@@ -128,7 +128,7 @@ Built entirely with **Python**, **Streamlit**, and open-source ML libraries, Ret
 ### Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/MoazzamFarooqui/RetailIQ.git
 cd RetailIQ
 ```
 
