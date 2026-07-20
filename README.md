@@ -439,7 +439,7 @@ Data → InsightsEngine → NL insights, recommendations, health score
 
 # API Reference
 
-### OpenWeatherMap (Optional)
+### OpenWeatherMap 
 
 RetailIQ integrates with the OpenWeatherMap API for live weather data:
 
@@ -451,7 +451,7 @@ RetailIQ integrates with the OpenWeatherMap API for live weather data:
 Free Tier: 1,000 calls/day , sufficient for standard usage.
 Fallback: Returns seasonal defaults when API key is not configured.
 
-### Calendarific (Optional)
+### Calendarific 
 
 | Endpoint | Usage | Frequency |
 |----------|-------|-----------|
