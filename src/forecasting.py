@@ -1,0 +1,484 @@
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import joblib
+import warnings
+warnings.filterwarnings('ignore')
+
+
+class DemandForecaster:
+    """Demand forecasting with support for multiple model types.
+
+    Supported models: 'baseline', 'random_forest', 'xgboost', 'lightgbm', 'prophet'.
+    """
+
+    def __init__(self, model_type='random_forest'):
+        self.model_type = model_type
+        self.model = None
+        self.feature_names = None
+
+    # ── Feature preparation ──────────────────────────────────────────────────
+
+    def prepare_features(self, df, target_col='sales', exclude_cols=None):
+        """Prepare features for modeling"""
+        if exclude_cols is None:
+            exclude_cols = ['id', 'date', 'd', 'wm_yr_wk']
+
+        if self.feature_names is not None:
+            valid_features = [f for f in self.feature_names if f in df.columns]
+        else:
+            feature_cols = [
+                col for col in df.columns
+                if col not in exclude_cols + [target_col]
+                and df[col].dtype in ['int64', 'float64']
+            ]
+            valid_features = []
+            for col in feature_cols:
+                if df[col].notna().sum() > 0 and df[col].nunique() > 1:
+                    valid_features.append(col)
+            self.feature_names = valid_features
+
+        X = df[valid_features].fillna(0)
+        y = df[target_col] if target_col in df.columns else None
+        return X, y
+
+    # ── Individual trainers ─────────────────────────────────────────────────
+
+    def train_baseline(self, df, target_col='sales'):
+        """Naive baseline: predict the last known value (previous day within group)."""
+        self.model_type = 'baseline'
+        # Compute a simple per-group mean as the baseline
+        if 'item_id' in df.columns and 'store_id' in df.columns:
+            baseline = df.groupby(['item_id', 'store_id'])[target_col].mean().to_dict()
+            self.model = {'_type': 'baseline', 'values': baseline}
+        else:
+            self.model = {'_type': 'baseline', 'global_mean': df[target_col].mean()}
+        return self.model
+
+    def train_random_forest(self, X_train, y_train, n_estimators=100, max_depth=10):
+        """Train a Random Forest model"""
+        from sklearn.ensemble import RandomForestRegressor
+        self.model = RandomForestRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            random_state=42,
+            n_jobs=-1
+        )
+        self.model.fit(X_train, y_train)
+        self.model_type = 'random_forest'
+        return self.model
+
+    def train_xgboost(self, X_train, y_train, n_estimators=200, max_depth=8, learning_rate=0.1):
+        """Train an XGBoost model"""
+        from xgboost import XGBRegressor
+        self.model = XGBRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            learning_rate=learning_rate,
+            random_state=42,
+            n_jobs=-1,
+            verbosity=0
+        )
+        self.model.fit(X_train, y_train)
+        self.model_type = 'xgboost'
+        return self.model
+
+    def train_lightgbm(self, X_train, y_train, n_estimators=200, max_depth=8, learning_rate=0.1):
+        """Train a LightGBM model"""
+        from lightgbm import LGBMRegressor
+        self.model = LGBMRegressor(
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            learning_rate=learning_rate,
+            random_state=42,
+            n_jobs=-1,
+            verbosity=-1
+        )
+        self.model.fit(X_train, y_train)
+        self.model_type = 'lightgbm'
+        return self.model
+
+    def train_prophet(self, df, date_col='date', target_col='sales'):
+        """Train a Prophet model on aggregated daily sales.
+
+        Prophet works best on univariate time series, so we aggregate all sales per day.
+        """
+        from prophet import Prophet
+
+        # Aggregate daily
+        daily = df.groupby(date_col)[target_col].sum().reset_index()
+        daily.columns = ['ds', 'y']
+
+        self.model = Prophet(
+            yearly_seasonality=True,
+            weekly_seasonality=True,
+            daily_seasonality=False,
+            interval_width=0.95
+        )
+        self.model.fit(daily)
+        self.model_type = 'prophet'
+        # Store the date range for future forecasting
+        self._prophet_daily = daily
+        return self.model
+
+    # ── Multi-model training & comparison ──────────────────────────────────
+
+    def train_all_models(self, df, target_col='sales', test_size=0.2,
+                          sample_frac=1.0, include_prophet=False,
+                          include_baseline=True):
+        """Train all supported models on the same data and return a comparison table.
+
+        Returns
+        -------
+        results : pd.DataFrame
+            Columns: model, MAE, RMSE, R2, MAPE, training_time_sec
+        best_model : str
+            Name of the model with lowest MAE
+        """
+        from time import time
+
+        # Optionally sample for speed
+        if sample_frac < 1.0:
+            df = df.sample(frac=sample_frac, random_state=42)
+
+        X, y = self.prepare_features(df, target_col)
+        mask = y.notna()
+        X = X[mask]
+        y = y[mask]
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42
+        )
+
+        models_to_train = []
+        if include_baseline:
+            models_to_train.append('baseline')
+        models_to_train.extend(['random_forest', 'xgboost', 'lightgbm'])
+        results = []
+
+        for mtype in models_to_train:
+            t0 = time()
+            try:
+                if mtype == 'baseline':
+                    # Baseline: use per-group mean as prediction
+                    self.train_baseline(df, target_col)
+                    preds = self.predict(X_test)
+                elif mtype == 'random_forest':
+                    self.train_random_forest(X_train, y_train)
+                    preds = self.predict(X_test)
+                elif mtype == 'xgboost':
+                    self.train_xgboost(X_train, y_train)
+                    preds = self.predict(X_test)
+                elif mtype == 'lightgbm':
+                    self.train_lightgbm(X_train, y_train)
+                    preds = self.predict(X_test)
+
+                elapsed = time() - t0
+                metrics = self._calculate_metrics(y_test, preds)
+                metrics['model'] = mtype
+                metrics['training_time_sec'] = round(elapsed, 2)
+                results.append(metrics)
+
+            except Exception as e:
+                results.append({
+                    'model': mtype,
+                    'MAE': np.nan,
+                    'RMSE': np.nan,
+                    'R2': np.nan,
+                    'MAPE': np.nan,
+                    'training_time_sec': np.nan,
+                    'error': str(e)
+                })
+
+        # Prophet — separate because it uses aggregated daily data
+        if include_prophet:
+            t0 = time()
+            try:
+                self.train_prophet(df, target_col=target_col)
+                # Evaluate Prophet on test period
+                test_min = df['date'].max() - pd.Timedelta(days=28)
+                future = self.model.make_future_dataframe(periods=0)
+                forecast = self.model.predict(future)
+                forecast['ds'] = pd.to_datetime(forecast['ds'])
+                # Merge predictions onto test data
+                daily_actual = df.groupby('date')[target_col].sum().reset_index()
+                daily_actual.columns = ['ds', 'y_actual']
+                merged = forecast.merge(daily_actual, on='ds', how='inner')
+                merged = merged[merged['ds'] >= test_min]
+                if len(merged) > 0:
+                    preds = merged['yhat'].values
+                    y_act = merged['y_actual'].values
+                    p_metrics = self._calculate_metrics(y_act, preds)
+                    p_metrics['model'] = 'prophet'
+                    p_metrics['training_time_sec'] = round(time() - t0, 2)
+                    results.append(p_metrics)
+                else:
+                    results.append({
+                        'model': 'prophet', 'MAE': np.nan, 'RMSE': np.nan,
+                        'R2': np.nan, 'MAPE': np.nan, 'training_time_sec': round(time() - t0, 2)
+                    })
+            except Exception as e:
+                results.append({
+                    'model': 'prophet', 'MAE': np.nan, 'RMSE': np.nan,
+                    'R2': np.nan, 'MAPE': np.nan, 'training_time_sec': round(time() - t0, 2),
+                    'error': str(e)
+                })
+
+        result_df = pd.DataFrame(results)
+        # Best = lowest MAE, skipping NaN
+        valid = result_df.dropna(subset=['MAE'])
+        if len(valid) > 0:
+            best = valid.loc[valid['MAE'].idxmin(), 'model']
+        else:
+            best = 'random_forest'
+
+        return result_df, best
+
+    @staticmethod
+    def _calculate_metrics(y_true, y_pred):
+        """Calculate common regression metrics."""
+        mae = mean_absolute_error(y_true, y_pred)
+        rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+        r2 = r2_score(y_true, y_pred)
+        mask = y_true != 0
+        mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
+        return {'MAE': mae, 'RMSE': rmse, 'R2': r2, 'MAPE': mape}
+
+    # ── Predict ──────────────────────────────────────────────────────────────
+
+    def predict(self, X):
+        """Make predictions using the trained model."""
+        if self.model is None:
+            raise ValueError("Model not trained yet. Call train_model() first.")
+
+        # Baseline model
+        if isinstance(self.model, dict) and self.model.get('_type') == 'baseline':
+            if 'global_mean' in self.model:
+                return np.full(len(X), self.model['global_mean'], dtype=float)
+            elif 'values' in self.model:
+                return np.ones(len(X)) * np.mean(list(self.model['values'].values()))
+            else:
+                return np.zeros(len(X))
+
+        # Tree-based models
+        if self.feature_names:
+            X = X[self.feature_names].fillna(0)
+
+        predictions = self.model.predict(X)
+        return np.maximum(predictions, 0)
+
+    def predict_prophet(self, periods=28):
+        """Forecast future periods using a trained Prophet model."""
+        if self.model_type != 'prophet':
+            raise ValueError("Model must be prophet to call predict_prophet")
+        future = self.model.make_future_dataframe(periods=periods)
+        forecast = self.model.predict(future)
+        return forecast.tail(periods)
+
+    # ── Unified training interface ──────────────────────────────────────────
+
+    def train_model(self, df, target_col='sales', test_size=0.2):
+        """Train the model specified by self.model_type."""
+        X, y = self.prepare_features(df, target_col)
+        mask = y.notna()
+        X = X[mask]
+        y = y[mask]
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=test_size, random_state=42
+        )
+
+        print(f"Training set: {len(X_train)} samples")
+        print(f"Test set: {len(X_test)} samples")
+
+        if self.model_type == 'baseline':
+            self.train_baseline(df, target_col)
+            # For baseline, evaluate on the whole dataset
+            train_score = self.evaluate(X_train, y_train)
+            test_score = self.evaluate(X_test, y_test)
+        elif self.model_type == 'random_forest':
+            self.train_random_forest(X_train, y_train)
+            train_score = self.evaluate(X_train, y_train)
+            test_score = self.evaluate(X_test, y_test)
+        elif self.model_type == 'xgboost':
+            self.train_xgboost(X_train, y_train)
+            train_score = self.evaluate(X_train, y_train)
+            test_score = self.evaluate(X_test, y_test)
+        elif self.model_type == 'lightgbm':
+            self.train_lightgbm(X_train, y_train)
+            train_score = self.evaluate(X_train, y_train)
+            test_score = self.evaluate(X_test, y_test)
+        elif self.model_type == 'prophet':
+            self.train_prophet(df, target_col=target_col)
+            train_score = {}
+            test_score = self.evaluate_prophet(df, target_col)
+        else:
+            raise ValueError(f"Unknown model_type: {self.model_type}")
+
+        print("\nTraining Metrics:")
+        for metric, value in train_score.items():
+            print(f"  {metric}: {value:.4f}")
+        print("\nTest Metrics:")
+        for metric, value in test_score.items():
+            print(f"  {metric}: {value:.4f}")
+
+        return self.model, test_score
+
+    def evaluate_prophet(self, df, target_col='sales'):
+        """Evaluate Prophet on the last 28 days."""
+        test_min = df['date'].max() - pd.Timedelta(days=28)
+        daily_actual = df.groupby('date')[target_col].sum().reset_index()
+        daily_actual.columns = ['ds', 'y_actual']
+        future = self.model.make_future_dataframe(periods=0)
+        forecast = self.model.predict(future)
+        forecast['ds'] = pd.to_datetime(forecast['ds'])
+        merged = forecast.merge(daily_actual, on='ds', how='inner')
+        merged = merged[merged['ds'] >= test_min]
+        if len(merged) == 0:
+            return {'MAE': np.nan, 'RMSE': np.nan, 'R2': np.nan, 'MAPE': np.nan}
+        preds = merged['yhat'].values
+        y_act = merged['y_actual'].values
+        return self._calculate_metrics(y_act, preds)
+
+    # ── Evaluation ──────────────────────────────────────────────────────────
+
+    def evaluate(self, X, y):
+        """Evaluate model performance"""
+        if isinstance(self.model, dict) and self.model.get('_type') == 'baseline':
+            # Baseline evaluation
+            if 'global_mean' in self.model:
+                predictions = np.full(len(X), self.model['global_mean'], dtype=float)
+            elif 'values' in self.model:
+                predictions = np.full(len(X), np.mean(list(self.model['values'].values())), dtype=float)
+            else:
+                predictions = np.zeros(len(X))
+        else:
+            predictions = self.predict(X)
+
+        mae = mean_absolute_error(y, predictions)
+        rmse = np.sqrt(mean_squared_error(y, predictions))
+        r2 = r2_score(y, predictions)
+
+        mask = y != 0
+        mape = np.mean(np.abs((y[mask] - predictions[mask]) / y[mask])) * 100
+
+        return {'MAE': mae, 'RMSE': rmse, 'R2': r2, 'MAPE': mape}
+
+    def get_feature_importance(self, top_n=20):
+        """Get feature importance from the trained model (tree-based only)."""
+        if self.model is None:
+            raise ValueError("Model not trained yet.")
+
+        if hasattr(self.model, 'feature_importances_'):
+            importance_df = pd.DataFrame({
+                'feature': self.feature_names,
+                'importance': self.model.feature_importances_
+            }).sort_values('importance', ascending=False).head(top_n)
+            return importance_df
+        else:
+            return None
+
+    # ── Forecasting ──────────────────────────────────────────────────────────
+
+    def forecast_future(self, df, periods=28):
+        """Forecast future demand for each item-store combination using an autoregressive approach.
+
+        For each future date, the method maintains a running history of the last N rows,
+        updates date-based features for the target date, predicts, and appends the
+        prediction so subsequent steps can use updated context.
+        """
+        if self.model_type == 'prophet':
+            return self._forecast_prophet(df, periods)
+
+        last_date = df['date'].max()
+        future_dates = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=periods)
+
+        item_store_combos = df[['item_id', 'store_id']].drop_duplicates()
+        forecasts = []
+
+        for _, row in item_store_combos.iterrows():
+            item_id = row['item_id']
+            store_id = row['store_id']
+
+            item_store_data = df[
+                (df['item_id'] == item_id) & (df['store_id'] == store_id)
+            ].copy()
+            if len(item_store_data) == 0:
+                continue
+
+            # Running history — keep the last 60 rows so lag/rolling windows up to 28
+            # have context even as we append predictions
+            running_history = item_store_data.tail(60).copy()
+
+            for future_date in future_dates:
+                # Step a: take the last row from the running history
+                future_row = running_history.iloc[-1:].copy()
+                future_row['date'] = future_date
+
+                # Step b: update date-based features for the target date
+                future_row['year'] = future_date.year
+                future_row['month'] = future_date.month
+                future_row['day'] = future_date.day
+                future_row['dayofweek'] = future_date.dayofweek
+                future_row['quarter'] = future_date.quarter
+                future_row['is_weekend'] = int(future_date.dayofweek >= 5)
+
+                # Lag and rolling features are already computed on the last row — use them
+                X_future, _ = self.prepare_features(future_row, target_col='sales')
+
+                # Step c: make prediction
+                pred = self.predict(X_future)[0]
+
+                forecasts.append({
+                    'item_id': item_id,
+                    'store_id': store_id,
+                    'date': future_date,
+                    'predicted_sales': pred
+                })
+
+                # Step d: append the prediction as a new row to the running history
+                pred_row = future_row.copy()
+                pred_row['sales'] = pred
+                running_history = pd.concat(
+                    [running_history, pred_row], ignore_index=True
+                )
+                # Step e: next iteration will use the updated history
+
+        return pd.DataFrame(forecasts)
+
+    def _forecast_prophet(self, df, periods=28):
+        """Prophet-based future forecast at aggregate level."""
+        future = self.model.make_future_dataframe(periods=periods)
+        forecast = self.model.predict(future)
+        last_date = df['date'].max()
+        result = forecast[forecast['ds'] > last_date][['ds', 'yhat']].copy()
+        result.columns = ['date', 'predicted_sales']
+        return result
+
+    # ── Persistence ──────────────────────────────────────────────────────────
+
+    def save_model(self, filepath):
+        """Save the trained model"""
+        if self.model is None:
+            raise ValueError("No model to save. Train a model first.")
+
+        model_data = {
+            'model': self.model,
+            'feature_names': self.feature_names,
+            'model_type': self.model_type
+        }
+
+        joblib.dump(model_data, filepath)
+        print(f"Model saved to {filepath}")
+
+    def load_model(self, filepath):
+        """Load a trained model"""
+        model_data = joblib.load(filepath)
+
+        self.model = model_data['model']
+        self.feature_names = model_data.get('feature_names')
+        self.model_type = model_data.get('model_type', 'random_forest')
+
+        print(f"Model loaded from {filepath}")
