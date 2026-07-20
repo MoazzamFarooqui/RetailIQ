@@ -539,14 +539,6 @@ If you encounter any issues, have feature requests, or need assistance:
 # Created By
 
 <p align="center">
-  <a href="#">
-    <img src="https://img.shields.io/badge/RetailIQ-1E3A5F?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTEyIDJMMiA3bDEwIDUgMTAtNS0xMC01eiIvPjxwYXRoIGQ9Ik0yIDE3bDEwIDUgMTAtNSIvPjxwYXRoIGQ9Ik0yIDEybDEwIDUgMTAtNSIvPjwvc3ZnPg==" alt="RetailIQ" />
-  </a>
-</p>
-
----
-
-<p align="center">
   <i>Built with ❤️ for retailers, analysts, and data-driven decision makers.</i>
   <br>
   <i>Powered by Python, Streamlit, and open-source machine learning.</i>
