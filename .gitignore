@@ -1,0 +1,81 @@
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+*.so
+*.whl
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.mo
+*.pot
+instance/
+docs/_build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_*
+
+# ── Data (raw committed, processed generated) ──────────────────────────────────
+data/processed/*
+!data/processed/.gitkeep
+data/temp/*
+
+# ── Models ─────────────────────────────────────────────────────────────────────
+models/*
+!models/.gitkeep
+
+# ── Database ───────────────────────────────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Temp upload ────────────────────────────────────────────────────────────────
+temp_upload.csv
+
+# ── Environment ────────────────────────────────────────────────────────────────
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# ── IDE ────────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*~
+
+# ── OS ─────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── Streamlit ──────────────────────────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ── Reports (generated) ────────────────────────────────────────────────────────
+reports/figures/*
+reports/exports/*
+!reports/**/.gitkeep
+
+# ── Config ─────────────────────────────────────────────────────────────────────
+.claude/
+*.local.json
+
+# ── Logs ───────────────────────────────────────────────────────────────────────
+*.log
