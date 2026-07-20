@@ -379,12 +379,6 @@ RetailIQ/
 ├── reports/
 │   ├── exports/                        # Generated reports (CSV, PDF, Excel)
 │   └── figures/                        # Generated figures (PNG)
-│
-├── .claude/                            # Claude Code configuration
-│   └── settings.local.json             # Permission allowlist
-│
-└── .vscode/
-    └── settings.json                   # VS Code environment settings
 ```
 
 ---
