@@ -34,7 +34,6 @@ A comprehensive AI-powered retail analytics platform with demand forecasting, in
 * [API Reference](#api-reference)
 * [Technologies Used](#technologies-used)
 * [Contributing](#contributing)
-* [License](#license)
 * [Support](#support)
 * [Created By](#created-by)
 
@@ -517,12 +516,6 @@ Contributions are welcome! Here's how you can help improve RetailIQ:
 * Support for PostgreSQL/MySQL as an alternative database backend
 * Add comparative analysis across multiple stores/chains
 * Implement A/B testing for promotional effectiveness
-
----
-
-# License
-
-This project is licensed under the MIT License.
 
 ---
 
