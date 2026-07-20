@@ -536,8 +536,6 @@ If you encounter any issues, have feature requests, or need assistance:
 
 ---
 
-# Created By
-
 <p align="center">
   <i>Built with ❤️ for retailers, analysts, and data-driven decision makers.</i>
   <br>
