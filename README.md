@@ -528,8 +528,3 @@ If you encounter any issues, have feature requests, or need assistance:
 
 ---
 
-<p align="center">
-  <i>Built with ❤️ for retailers, analysts, and data-driven decision makers.</i>
-  <br>
-  <i>Powered by Python, Streamlit, and open-source machine learning.</i>
-</p>
