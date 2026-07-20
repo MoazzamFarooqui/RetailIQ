@@ -35,7 +35,6 @@ A comprehensive AI-powered retail analytics platform with demand forecasting, in
 * [Technologies Used](#technologies-used)
 * [Contributing](#contributing)
 * [Support](#support)
-* [Created By](#created-by)
 
 ---
 
