@@ -1,6 +1,6 @@
 # RetailIQ – AI-Powered Retail Intelligence & Inventory Optimization Platform
 
-A comprehensive **AI-powered retail analytics platform** with demand forecasting, inventory optimization, explainable AI, automated business insights, and real-time business intelligence , all wrapped in an interactive Streamlit dashboard.
+A comprehensive AI-powered retail analytics platform with demand forecasting, inventory optimization, explainable AI, automated business insights, and real-time business intelligence , all wrapped in an interactive Streamlit dashboard.
 
 ---
 
@@ -44,11 +44,11 @@ A comprehensive **AI-powered retail analytics platform** with demand forecasting
 
 Retail businesses face constant challenges in managing inventory, forecasting demand, and making data-driven decisions. Without the right tools, they rely on intuition , leading to stockouts, overstock, lost revenue, and tied-up capital.
 
-**RetailIQ** solves this by providing a complete AI-powered retail intelligence platform that ingests raw sales data and runs it through a full pipeline: data validation, automated feature engineering, multi-model demand forecasting (5 competing ML models), inventory optimization (safety stock, EOQ, reorder points, stockout prediction), SHAP-based explainability, and automated natural-language business insights.
+RetailIQ solves this by providing a complete AI-powered retail intelligence platform that ingests raw sales data and runs it through a full pipeline: data validation, automated feature engineering, multi-model demand forecasting (5 competing ML models), inventory optimization (safety stock, EOQ, reorder points, stockout prediction), SHAP-based explainability, and automated natural-language business insights.
 
-The platform is **Pakistan-context aware** , it understands local seasons (Spring, Summer, Monsoon, Autumn, Winter), Islamic holidays (Eid, Ramadan, Muharram), fixed Pakistan holidays (Pakistan Day, Independence Day, etc.), and adjusts demand multipliers and inventory recommendations accordingly. It also integrates live weather data via OpenWeatherMap for real-time context-aware forecasting.
+The platform is Pakistan-context aware , it understands local seasons (Spring, Summer, Monsoon, Autumn, Winter), Islamic holidays (Eid, Ramadan, Muharram), fixed Pakistan holidays (Pakistan Day, Independence Day, etc.), and adjusts demand multipliers and inventory recommendations accordingly. It also integrates live weather data via OpenWeatherMap for real-time context-aware forecasting.
 
-Built entirely with **Python**, **Streamlit**, and open-source ML libraries, RetailIQ runs on any machine with a single command: `streamlit run app.py`.
+Built entirely with Python, Streamlit, and open-source ML libraries, RetailIQ runs on any machine with a single command: `streamlit run app.py`.
 
 ---
 
@@ -62,26 +62,26 @@ Built entirely with **Python**, **Streamlit**, and open-source ML libraries, Ret
 * SQLite database stores all uploads, forecasts, and inventory history
 
 ### AI Demand Forecasting
-* **5 competing ML models**: Baseline, Random Forest, XGBoost, LightGBM, Prophet
+* 5 competing ML models: Baseline, Random Forest, XGBoost, LightGBM, Prophet
 * One-click model comparison (MAE, RMSE, MAPE, R²)
 * Auto-selects and saves the best-performing model
-* Preset horizons: **7 days**, **30 days**, **90 days**
+* Preset horizons: 7 days, 30 days, 90 days
 * Autoregressive forecasting based on today's date & data
 
 ### Live Context Integration
-* **Weather API**: Real-time temperature, conditions, 5-day forecast
-* **Holiday API**: Holiday-aware forecasting with built-in Pakistan holiday fallback
+* Weather API: Real-time temperature, conditions, 5-day forecast
+* Holiday API: Holiday-aware forecasting with built-in Pakistan holiday fallback
 * Uses current date for all forecasting calculations
 
 ### Inventory Optimization
-* **Safety Stock** calculation (Z-score × demand variability × √Lead Time)
-* **Reorder Point** with lead time adjustment
-* **EOQ** (Economic Order Quantity)
-* **Stockout Prediction** , predicts exactly when stock will run out
-* **Overstock Detection** , identifies items tying up capital
-* **Low-Stock Alerts** with severity levels (OK / LOW / CRITICAL / EXCESS)
-* **Demand Multipliers** , automatically adjusts for peak seasons & holidays
-* **Seasonal Product Alerts** , flags in/out-of-season items
+* Safety Stock calculation (Z-score × demand variability × √Lead Time)
+* Reorder Point with lead time adjustment
+* EOQ (Economic Order Quantity)
+* Stockout Prediction , predicts exactly when stock will run out
+* Overstock Detection , identifies items tying up capital
+* Low-Stock Alerts with severity levels (OK / LOW / CRITICAL / EXCESS)
+* Demand Multipliers , automatically adjusts for peak seasons & holidays
+* Seasonal Product Alerts , flags in/out-of-season items
 
 ### Explainable AI (SHAP)
 * Global feature importance rankings
@@ -104,7 +104,7 @@ Built entirely with **Python**, **Streamlit**, and open-source ML libraries, Ret
 * Weather impact analysis (temperature vs. sales correlation)
 * Holiday stock-up calendar with countdown timers
 * Recommended actions (weekend promos, seasonal prep, diversification, etc.)
-* **Data Health Score** (0–100) with specific improvement suggestions
+* Data Health Score (0–100) with specific improvement suggestions
 * Pre-Ramadan and pre-Eid shopping window detection
 
 ### Reports & Export
@@ -140,13 +140,13 @@ pip install -r requirements.txt
 
 ### Or install with uv (fast alternative)
 
-**Linux/macOS**
+Linux/macOS
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-**Windows PowerShell**
+Windows PowerShell
 
 ```powershell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -176,7 +176,7 @@ Without these API keys, the system falls back to built-in US holidays, Pakistan-
 
 ### Dataset
 
-RetailIQ ships with the **M5 Walmart retail dataset** (30,490 products × 1,941 days) for immediate exploration. You can upload your own retail sales CSV at any time via the **Upload Data** tab.
+RetailIQ ships with the M5 Walmart retail dataset (30,490 products × 1,941 days) for immediate exploration. You can upload your own retail sales CSV at any time via the Upload Data tab.
 
 ---
 
@@ -252,10 +252,10 @@ http://localhost:8501
 * Configurable service level (80%–99%), lead time, and excess threshold
 * View inventory KPIs (total items, healthy %, at-risk %, overstock %)
 * Analyze inventory status distribution (pie chart + bar chart)
-* **Stockout Predictions** , items sorted by days until stockout, with critical alerts
-* **Overstock Detection** , items flagged with excess units and days of stock
-* **Critical & Low-Stock Items** , items needing immediate reorder
-* **Recommended Actions** , total units to order, average order size
+* Stockout Predictions , items sorted by days until stockout, with critical alerts
+* Overstock Detection , items flagged with excess units and days of stock
+* Critical & Low-Stock Items , items needing immediate reorder
+* Recommended Actions , total units to order, average order size
 * Filterable recommendations table
 * Export full report as CSV or PDF
 
@@ -264,20 +264,20 @@ http://localhost:8501
 * View current model information (type, features, estimators)
 * Compare all trained models side-by-side with metrics
 * Visualize model comparison with bar charts
-* View **Feature Importance** , top 20 features ranked
-* Generate **SHAP Analysis** , summary plot showing feature impact
-* **Explain Individual Predictions** , pick any data point, see waterfall plot with per-feature contributions
+* View Feature Importance , top 20 features ranked
+* Generate SHAP Analysis , summary plot showing feature impact
+* Explain Individual Predictions , pick any data point, see waterfall plot with per-feature contributions
 * Export model comparison as CSV
 
 ### AI Insights
 
 * Live context: today's date, weather, season, and upcoming holidays
-* **Seasonal Demand Analysis** , current season advice, high/low-demand products
-* **Weather Impact** , temperature vs. sales scatter plot with trendline
-* **AI-Generated Insights** , categorized automatically (Summary, Trends, Seasonality, Products, Stores, Revenue, Data Quality)
-* **Recommended Actions** , actionable business recommendations with explanations
-* **Holiday Stock-Up Calendar** , countdown to upcoming holidays with priority levels and specific product suggestions
-* **Data Health Score** , 0–100 rating with itemized deductions and improvement suggestions
+* Seasonal Demand Analysis , current season advice, high/low-demand products
+* Weather Impact , temperature vs. sales scatter plot with trendline
+* AI-Generated Insights , categorized automatically (Summary, Trends, Seasonality, Products, Stores, Revenue, Data Quality)
+* Recommended Actions , actionable business recommendations with explanations
+* Holiday Stock-Up Calendar , countdown to upcoming holidays with priority levels and specific product suggestions
+* Data Health Score , 0–100 rating with itemized deductions and improvement suggestions
 * Export insights as text or CSV
 
 ---
@@ -448,8 +448,8 @@ RetailIQ integrates with the OpenWeatherMap API for live weather data:
 | Current Weather | Fetch temperature, conditions, humidity, wind | On dashboard load |
 | 5-Day Forecast | Weather forecast for the prediction period | On forecast generation |
 
-**Free Tier**: 1,000 calls/day , sufficient for standard usage.
-**Fallback**: Returns seasonal defaults when API key is not configured.
+Free Tier: 1,000 calls/day , sufficient for standard usage.
+Fallback: Returns seasonal defaults when API key is not configured.
 
 ### Calendarific (Optional)
 
@@ -457,41 +457,41 @@ RetailIQ integrates with the OpenWeatherMap API for live weather data:
 |----------|-------|-----------|
 | Holidays API | Fetch national and religious holidays | On application start |
 
-**Fallback**: Built-in Islamic holiday tables (2024–2028) and fixed Pakistan holidays (Pakistan Day, Independence Day, Iqbal Day, Quaid-e-Azam Day, etc.) , fully functional offline.
+Fallback: Built-in Islamic holiday tables (2024–2028) and fixed Pakistan holidays (Pakistan Day, Independence Day, Iqbal Day, Quaid-e-Azam Day, etc.) , fully functional offline.
 
 ---
 
 # Technologies Used
 
 ### Frontend & Visualization
-* **Streamlit** , Interactive web application framework
-* **Plotly** , Interactive charts and graphs
-* **Matplotlib** , Static visualization and publication-quality figures
-* **Seaborn** , Statistical data visualization
+* Streamlit , Interactive web application framework
+* Plotly , Interactive charts and graphs
+* Matplotlib , Static visualization and publication-quality figures
+* Seaborn , Statistical data visualization
 
 ### Machine Learning
-* **scikit-learn** , Random Forest, feature preprocessing, metrics
-* **XGBoost** , Gradient boosting with extreme gradient boosting
-* **LightGBM** , Gradient boosting with leaf-wise tree growth
-* **Prophet** , Facebook's time-series forecasting model
+* scikit-learn , Random Forest, feature preprocessing, metrics
+* XGBoost , Gradient boosting with extreme gradient boosting
+* LightGBM , Gradient boosting with leaf-wise tree growth
+* Prophet , Facebook's time-series forecasting model
 
 ### Explainability
-* **SHAP** , SHapley Additive exPlanations for model interpretability
+* SHAP , SHapley Additive exPlanations for model interpretability
 
 ### Data Processing & Storage
-* **Pandas** , Data manipulation and analysis
-* **NumPy** , Numerical computing
-* **SciPy** , Scientific computing (statistical functions)
-* **Statsmodels** , Statistical modeling
-* **SQLite** , Lightweight embedded database
-* **Joblib** , Model serialization and persistence
+* Pandas , Data manipulation and analysis
+* NumPy , Numerical computing
+* SciPy , Scientific computing (statistical functions)
+* Statsmodels , Statistical modeling
+* SQLite , Lightweight embedded database
+* Joblib , Model serialization and persistence
 
 ### External APIs
-* **OpenWeatherMap** , Live weather data and forecasts
-* **Calendarific** , National and religious holiday data
+* OpenWeatherMap , Live weather data and forecasts
+* Calendarific , National and religious holiday data
 
 ### Reporting
-* **fpdf2** , PDF report generation
+* fpdf2 , PDF report generation
 
 ---
 
