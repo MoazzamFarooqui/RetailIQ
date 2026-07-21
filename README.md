@@ -15,7 +15,6 @@ A comprehensive AI-powered retail analytics platform with demand forecasting, in
 ![SHAP](https://img.shields.io/badge/SHAP-Explainable%20AI-3182CE?style=for-the-badge)
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 ![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen?style=for-the-badge)
 
 ---
 
