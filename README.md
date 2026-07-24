@@ -27,7 +27,6 @@ A comprehensive AI-powered retail analytics platform with demand forecasting, in
 * [Configuration](#configuration)
 * [Running the Application](#running-the-application)
 * [Usage Guide](#usage-guide)
-* [Screenshots](#screenshots)
 * [Project Structure](#project-structure)
 * [Data Pipeline](#data-pipeline)
 * [API Reference](#api-reference)
@@ -276,42 +275,6 @@ http://localhost:8501
 * Holiday Stock-Up Calendar , countdown to upcoming holidays with priority levels and specific product suggestions
 * Data Health Score , 0–100 rating with itemized deductions and improvement suggestions
 * Export insights as text or CSV
-
----
-
-# Screenshots
-
-## Dashboard , Live KPIs & Context
-
-*[Add screenshot of the Home dashboard with weather, holiday, and KPI cards]*
-
-## Upload & Auto-Clean
-
-*[Add screenshot of the CSV upload page with validation results]*
-
-## Model Training & Comparison
-
-*[Add screenshot of the training results with 5-model comparison table and charts]*
-
-## Sales & Revenue Analytics
-
-*[Add screenshot of analytics page with trend charts, season analysis, and category breakdowns]*
-
-## AI Demand Forecasting
-
-*[Add screenshot of the forecast page with historical vs. predicted overlay and inventory integration]*
-
-## Inventory Optimization
-
-*[Add screenshot of inventory KPIs, stockout predictions, and overstock detection]*
-
-## SHAP Explainability
-
-*[Add screenshot of SHAP summary plot and individual prediction waterfall]*
-
-## AI Business Insights
-
-*[Add screenshot of generated insights, recommendations, and data health score]*
 
 ---
 
