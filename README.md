@@ -294,8 +294,6 @@ docker compose up -d
 |----------|----------|------|
 | `admin` | `admin123` | Administrator |
 
-> ⚠️ Change the default password in production.
-
 ### Everyday commands
 
 | Action | Command |
@@ -308,8 +306,6 @@ docker compose up -d
 | View logs (all) | `docker compose logs -f` |
 | View logs (API) | `docker logs retailiq-api -f` |
 | Check status | `docker compose ps` |
-
-> The `./backend` folder is bind-mounted into the API container, so Python code changes take effect after `docker restart retailiq-api` (no image rebuild needed). Frontend changes require `docker compose up -d --build client`.
 
 ---
 
