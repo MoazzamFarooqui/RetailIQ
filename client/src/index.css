@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #1E3A5F;
+  --primary-light: #2C5282;
+  --accent: #2563EB;
+  --success: #38A169;
+  --warning: #D69E2E;
+  --danger: #E53E3E;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  h1 { @apply text-2xl font-bold text-[#1E3A5F] tracking-tight; }
+  h2 { @apply text-xl font-semibold text-[#2C5282] border-b border-gray-200 pb-2 mb-4; }
+  h3 { @apply text-lg font-semibold text-[#1E3A5F] mb-3; }
+}
+
+@layer components {
+  .kpi-card {
+    @apply bg-white rounded-xl p-4 border border-gray-100 shadow-sm transition-all duration-200;
+  }
+  .kpi-card:hover {
+    @apply shadow-md border-blue-200;
+  }
+  .kpi-card-label {
+    @apply text-xs font-medium text-gray-500 uppercase tracking-wide mb-1;
+  }
+  .kpi-card-value {
+    @apply text-2xl font-bold text-gray-900;
+  }
+  .kpi-card-sub {
+    @apply text-xs text-gray-400 mt-0.5;
+  }
+  .content-section {
+    @apply bg-white rounded-xl p-6 mb-6 border border-gray-100 shadow-sm;
+  }
+  .content-section-title {
+    @apply text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4;
+  }
+  .status-ok { @apply text-green-600 bg-green-50 border-green-200; }
+  .status-low { @apply text-yellow-600 bg-yellow-50 border-yellow-200; }
+  .status-critical { @apply text-red-600 bg-red-50 border-red-200; }
+  .status-excess { @apply text-blue-600 bg-blue-50 border-blue-200; }
+}

@@ -1,0 +1,519 @@
+/* ==========================================================================
+   RetailIQ Design System — Professional Dashboard Theme
+   ========================================================================== */
+
+:root {
+    --primary: #1E3A5F;
+    --primary-light: #2C5282;
+    --accent: #2563EB;
+    --accent-light: #DBEAFE;
+    --success: #38A169;
+    --warning: #D69E2E;
+    --danger: #E53E3E;
+    --bg-light: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #1A202C;
+    --text-secondary: #64748B;
+
+    /* Sidebar — Premium Light Docked */
+    --sidebar-bg-start: #FFFFFF;
+    --sidebar-bg-mid: #F8FAFC;
+    --sidebar-bg-end: #F1F5F9;
+    --sidebar-nav-bg: rgba(0, 0, 0, 0.02);
+    --sidebar-nav-hover: rgba(59, 130, 246, 0.06);
+    --sidebar-nav-active: rgba(59, 130, 246, 0.10);
+    --sidebar-text: #334155;
+    --sidebar-text-dim: #94A3B8;
+    --sidebar-text-muted: #CBD5E1;
+    --sidebar-accent: #3B82F6;
+    --sidebar-accent-glow: rgba(59, 130, 246, 0.25);
+    --sidebar-border: rgba(0, 0, 0, 0.08); /* Slightly darker border for docked edge */
+    --sidebar-glass-border: rgba(255, 255, 255, 0.8);
+    --border-light: #E2E8F0;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.06);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Base Layout
+   ========================================================================== */
+
+.main > div {
+    padding: 0 2rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1 {
+    color: var(--primary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+}
+
+h2 {
+    color: var(--primary-light);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-light);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+}
+
+h3 {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.stCaption,
+.stMarkdown small,
+.stMarkdown .caption {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Sidebar — Professional Left-Docked
+   ========================================================================== */
+
+/* ── Main container ──────────────────────────────────────────────────── */
+[data-testid="stSidebar"] {
+    background: #FFFFFF !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+    border-radius: 0 !important; /* Forces completely straight edges */
+    min-width: 256px !important;
+    max-width: 256px !important;
+    width: 256px !important;
+    height: 100vh !important; /* Full vertical height */
+    margin: 0 !important; /* Zero margin docks it fully to the edge */
+    display: flex !important;
+    visibility: visible !important;
+    transform: none !important;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    /* Soft shadow fading into the main content to establish hierarchy */
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03) !important; 
+    backdrop-filter: blur(12px);
+}
+
+/* Subtle noise/grain texture overlay for premium feel */
+[data-testid="stSidebar"]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: 0;
+}
+
+[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+    background: transparent !important;
+    color: var(--sidebar-text);
+    padding: 0 !important;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 0;
+}
+
+/* ── Hide ALL Streamlit sidebar chrome ──────────────────────────────── */
+[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsed-control"],
+button[kind="header"],
+.stSidebarCollapseButton,
+.st-emotion-cache-1d9vfoi,
+.st-emotion-cache-1wmy9hl,
+.st-emotion-cache-1dp5vir,
+.st-emotion-cache-1m6wrpk,
+.st-emotion-cache-1cv9axf,
+.st-emotion-cache-17lntkn,
+.st-emotion-cache-1b2qsl2,
+.st-emotion-cache-1vsb9sc,
+.st-emotion-cache-1yj1pj2,
+.st-emotion-cache-dvne4u,
+.st-emotion-cache-13ejsyy,
+.st-emotion-cache-1dweql6,
+.st-emotion-cache-vj1nmy,
+.st-emotion-cache-1nx0t7n,
+.st-emotion-cache-18k6axe,
+.st-emotion-cache-jkfxgf,
+.st-emotion-cache-k63m9t,
+.st-emotion-cache-1d4ddxw,
+.st-emotion-cache-1r4mdcq,
+.st-emotion-cache-12fm25u,
+[data-testid="stSidebar"] [data-testidbaseweb="button"],
+[data-testid="baseButton-header"],
+section[data-testid="stSidebar"] > button:first-child,
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+
+/* Main content area — perfectly accounts for 256px docked sidebar */
+[data-testid="stAppViewContainer"] > section:first-of-type {
+    margin-left: 256px !important; 
+}
+
+/* The main content block itself */
+.main {
+    max-width: calc(100% - 256px) !important;
+}
+
+/* Hide deploy button and toolbar */
+.stAppDeployButton,
+.st-emotion-cache-1b6sy4p,
+[data-testid="stToolbar"],
+[data-testid="stToolbarActions"],
+[data-testid="stStatusWidget"] {
+    display: none !important;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] [data-testid="stSidebarContent"]::-webkit-scrollbar {
+    width: 3px;
+}
+
+[data-testid="stSidebar"] [data-testid="stSidebarContent"]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+[data-testid="stSidebar"] [data-testid="stSidebarContent"]::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+}
+
+[data-testid="stSidebar"] [data-testid="stSidebarContent"]::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Sidebar — Interior Components
+   ========================================================================== */
+
+/* ── Sidebar spacer utility ──────────────────────────────────────────── */
+.sidebar-spacer {
+    flex: 1;
+    min-height: 1rem;
+}
+
+/* ── Brand header ────────────────────────────────────────────────────── */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.5rem 1.25rem 1rem;
+    border-bottom: 1px solid var(--sidebar-border);
+    margin-bottom: 0.35rem;
+}
+
+.sidebar-brand-monogram {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--sidebar-accent), #6366F1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #fff;
+    letter-spacing: -0.03em;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-brand-monogram::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        135deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.15) 50%,
+        transparent 70%
+    );
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.sidebar-brand-text {
+    flex: 1;
+}
+
+.sidebar-brand-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+}
+
+.sidebar-brand-tagline {
+    font-size: 0.6rem;
+    color: var(--sidebar-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    margin-top: 0.1rem;
+}
+
+/* ── User profile mini-card ─────────────────────────────────────────── */
+.sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.25rem;
+    margin: 0.25rem 0.75rem 0.5rem;
+    background: var(--sidebar-nav-bg);
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: default;
+    transition: background 0.2s ease, border 0.2s ease;
+}
+
+.sidebar-profile:hover {
+    background: var(--sidebar-nav-hover);
+    border: 1px solid var(--sidebar-border);
+}
+
+.sidebar-profile-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3B82F6, #6366F1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.sidebar-profile-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-profile-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sidebar-text);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-profile-role {
+    font-size: 0.65rem;
+    color: var(--sidebar-text-dim);
+    line-height: 1;
+    margin-top: 0.15rem;
+}
+
+/* ── Status indicator dot ───────────────────────────────────────────── */
+.sidebar-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+    flex-shrink: 0;
+    position: relative;
+}
+
+.sidebar-status-dot::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(34, 197, 94, 0.3);
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ── Section labels ─────────────────────────────────────────────────── */
+.sidebar-nav-section {
+    padding: 1.25rem 1.25rem 0.35rem;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--sidebar-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    user-select: none;
+}
+
+/* ── Navigation items ───────────────────────────────────────────────── */
+[data-testid="stSidebar"] .stPageLink {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 0.55rem 1.25rem !important;
+    margin: 2px 0.75rem !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+    text-decoration: none !important;
+    outline: none !important;
+}
+
+[data-testid="stSidebar"] .stPageLink p {
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    color: var(--sidebar-text) !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+    transition: color 0.2s ease !important;
+}
+
+/* ── Custom SVG icons via mask-image for each nav item ──────────────── */
+[data-testid="stSidebar"] .stPageLink {
+    padding-left: 2.75rem !important;
+}
+
+[data-testid="stSidebar"] .stPageLink::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 17px !important;
+    height: 17px !important;
+    background-color: var(--sidebar-text-dim) !important;
+    mask-size: contain !important;
+    mask-repeat: no-repeat !important;
+    mask-position: center !important;
+    -webkit-mask-size: contain !important;
+    -webkit-mask-repeat: no-repeat !important;
+    -webkit-mask-position: center !important;
+    transition: background-color 0.3s ease !important;
+}
+
+/* Dashboard — grid */
+[data-testid="stSidebar"] a[href*="app.py"]::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='3' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Crect x='14' y='14' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='3' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Crect x='14' y='3' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Crect x='3' y='14' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3Crect x='14' y='14' width='7' height='7' rx='1.5' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Analytics — bar chart */
+[data-testid="stSidebar"] a[href*="Analytics"]::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cline x1='4' y1='21' x2='4' y2='14' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='9' y1='21' x2='9' y2='10' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='14' y1='21' x2='14' y2='6' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='19' y1='21' x2='19' y2='3' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cline x1='4' y1='21' x2='4' y2='14' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='9' y1='21' x2='9' y2='10' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='14' y1='21' x2='14' y2='6' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cline x1='19' y1='21' x2='19' y2='3' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+}
+
+/* Forecast — trending up */
+[data-testid="stSidebar"] a[href*="Forecast"]::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolyline points='23 6 13.5 15.5 8.5 10.5 1 18' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpolyline points='17 6 23 6 23 12' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolyline points='23 6 13.5 15.5 8.5 10.5 1 18' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpolyline points='17 6 23 6 23 12' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+}
+
+/* Inventory — package/box */
+[data-testid="stSidebar"] a[href*="Inventory"]::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='3.27 6.96 12 12.01 20.73 6.96' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='3.27 6.96 12 12.01 20.73 6.96' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='12' y1='22.08' x2='12' y2='12' stroke='black' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Model Insights — brain/neural */
+[data-testid="stSidebar"] a[href*="Model_Insights"]::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' stroke='black' stroke-width='2' fill='none'/%3E%3Ccircle cx='12' cy='12' r='4' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='12' y1='2' x2='12' y2='6' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='12' y1='18' x2='12' y2='22' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='2' y1='12' x2='6' y2='12' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='18' y1='12' x2='22' y2='12' stroke='black' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' stroke='black' stroke-width='2' fill='none'/%3E%3Ccircle cx='12' cy='12' r='4' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='12' y1='2' x2='12' y2='6' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='12' y1='18' x2='12' y2='22' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='2' y1='12' x2='6' y2='12' stroke='black' stroke-width='2' fill='none'/%3E%3Cline x1='18' y1='12' x2='22' y2='12' stroke='black' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+}
+
+/* AI Insights — sparkles/ai */
+[data-testid="stSidebar"] a[href*="AI_Insights"]::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3L14.5 8.5L20 9L16 12.5L17.5 18L12 15L6.5 18L8 12.5L4 9L9.5 8.5L12 3Z' stroke='black' stroke-width='1.5' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3L14.5 8.5L20 9L16 12.5L17.5 18L12 15L6.5 18L8 12.5L4 9L9.5 8.5L12 3Z' stroke='black' stroke-width='1.5' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* ── Hover & active icon state ──────────────────────────────────────────── */
+[data-testid="stSidebar"] .stPageLink:hover::before,
+[data-testid="stSidebar"] .stPageLink[data-testid*="page-link-active"]::before {
+    background-color: var(--sidebar-accent) !important;
+}
+
+/* ── Hover effect ─────────────────────────────────────────────────────────── */
+[data-testid="stSidebar"] .stPageLink:hover {
+    background: var(--sidebar-nav-hover) !important;
+    border-color: rgba(59, 130, 246, 0.15) !important;
+    transform: translateX(3px);
+}
+
+[data-testid="stSidebar"] .stPageLink:hover p {
+    color: #0F172A !important;
+}
+
+/* Active page link — with glow accent */
+[data-testid="stSidebar"] .stPageLink[data-testid*="page-link-active"],
+[data-testid="stSidebar"] .stPageLink[data-testid*="active"] {
+    background: var(--sidebar-nav-active) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1) !important;
+}
+
+[data-testid="stSidebar"] .stPageLink[data-testid*="page-link-active"] p,
+[data-testid="stSidebar"] .stPageLink[data-testid*="active"] p {
+    color: var(--sidebar-accent) !important;
+    font-weight: 600 !important;
+}
+
+/* ── System Status (Bottom Bar) ──────────────────────────────────────── */
+.sidebar-system-bar {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--sidebar-border);
+    background: #FAFAFA;
+}
+
+.sidebar-system-info {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--sidebar-text-dim);
+    margin-bottom: 0.2rem;
+}
+
+.sidebar-system-info span {
+    font-weight: 500;
+}
+
+.sidebar-system-version {
+    font-size: 0.65rem;
+    color: var(--sidebar-text-muted);
+}

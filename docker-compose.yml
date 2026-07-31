@@ -1,0 +1,159 @@
+services:
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: retailiq-backend:latest
+    container_name: retailiq-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=mysql+aiomysql://retailiq:retailiq@db:3306/retailiq
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - CORS_ORIGINS=["http://localhost:3000","http://localhost:5173"]
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── MySQL Database ───────────────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: retailiq-db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=retailiq_root
+      - MYSQL_DATABASE=retailiq
+      - MYSQL_USER=retailiq
+      - MYSQL_PASSWORD=retailiq
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── Redis (Cache + Celery Broker) ────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: retailiq-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── Celery Worker ────────────────────────────────────────────────────────────
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: retailiq-backend:latest
+    container_name: retailiq-celery-worker
+    command: celery -A app.tasks.celery_app worker -l info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=mysql+aiomysql://retailiq:retailiq@db:3306/retailiq
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./backend:/app
+    depends_on:
+      - redis
+      - db
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+    # Celery has no HTTP endpoint; probe process liveness via /proc (the slim
+    # image has no pgrep/ps). Scan each PID's cmdline for 'celery'.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,sys,glob; files=glob.glob('/proc/[0-9]*/cmdline'); alive=bool(files) and any('celery' in open(f,errors='ignore').read() for f in files); sys.exit(0 if alive else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── Celery Beat (Scheduled Tasks) ────────────────────────────────────────────
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: retailiq-backend:latest
+    container_name: retailiq-celery-beat
+    command: celery -A app.tasks.celery_app beat -l info
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=mysql+aiomysql://retailiq:retailiq@db:3306/retailiq
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+      - db
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+    # Celery beat is a long-running scheduler; probe process liveness via /proc.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,sys,glob; files=glob.glob('/proc/[0-9]*/cmdline'); alive=bool(files) and any('celery' in open(f,errors='ignore').read() for f in files); sys.exit(0 if alive else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── React Frontend (Client) ───────────────────────────────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: retailiq-client:latest
+    container_name: retailiq-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  retailiq-network:
+    driver: bridge

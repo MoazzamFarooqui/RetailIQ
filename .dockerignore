@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+
+# Environment
+.venv/
+venv/
+env/
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data (too large for build context)
+data/raw/*.csv
+data/processed/*.csv
+data/uploads/*.csv
+
+# Models
+models/*.joblib
+
+# Notebooks
+notebooks/
+.ipynb_checkpoints/
+
+# Reports
+reports/figures/
+reports/exports/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Node (if included in build context)
+node_modules/
