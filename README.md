@@ -193,7 +193,15 @@ git clone https://github.com/MoazzamFarooqui/RetailIQ.git
 cd RetailIQ
 ```
 
-### 2. Start the stack
+### 2. Configure environment (optional)
+
+Copy the example file and add your API keys if you have them:
+
+```bash
+cp .env.example .env
+```
+
+### 3. Start the stack
 
 ```bash
 docker compose up -d --build
@@ -201,7 +209,7 @@ docker compose up -d --build
 
 The first build downloads base images and installs dependencies (Python ML packages + Node modules) — allow 10–20 minutes. Subsequent starts take seconds.
 
-### 3. Verify
+### 4. Verify
 
 ```bash
 docker compose ps
@@ -218,26 +226,42 @@ All six containers should report `healthy` / `Up`.
 Create a `.env` file in the project root (see `.env.example`):
 
 ```env
-# Application
+# ── Application ────────────────────────────────────────────────
+APP_NAME=RetailIQ API
+APP_VERSION=2.0.0
 ENVIRONMENT=development
 DEBUG=true
 
-# Database (SQLite fallback for local dev without Docker)
-DATABASE_URL=sqlite+aiosqlite:///data/retailiq_v2.db
+# ── Database ──────────────────────────────────────────────────
+# For Docker Compose (internal network):
+DATABASE_URL=mysql+aiomysql://retailiq:retailiq@db:3306/retailiq
+# For local development (SQLite, no Docker):
+# DATABASE_URL=sqlite+aiosqlite:///data/retailiq_v2.db
 
-# Security
-SECRET_KEY=change-me-to-a-random-secret-in-production
+# ── Redis ─────────────────────────────────────────────────────
+# For Docker Compose:
+REDIS_URL=redis://redis:6379/0
+# For local development:
+# REDIS_URL=redis://localhost:6379/0
+
+# ── JWT Authentication ────────────────────────────────────────
+SECRET_KEY=change-this-to-a-long-random-string-in-production
 ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
 
-# CORS
-CORS_ORIGINS=["http://localhost:3000","http://localhost:5173"]
-
+# ── API Keys (optional — app falls back gracefully) ───────────
 # Weather data (free tier: https://openweathermap.org/api)
 OPENWEATHER_API_KEY=your_key_here
-
 # Holiday data (free tier: https://calendarific.com)
 HOLIDAY_API_KEY=your_key_here
+
+# ── Celery ────────────────────────────────────────────────────
+CELERY_BROKER_URL=redis://redis:6379/1
+CELERY_RESULT_BACKEND=redis://redis:6379/1
+
+# ── CORS ──────────────────────────────────────────────────────
+CORS_ORIGINS=["http://localhost:3000","http://localhost:5173","http://localhost:8000"]
 ```
 
 > **Note:** in Docker, `docker-compose.yml` overrides `DATABASE_URL` with `mysql+aiomysql://retailiq:retailiq@db:3306/retailiq` so the backend always uses the containerized MySQL. Without API keys the platform falls back to built-in Pakistan Islamic holiday tables (2024–2028) and seasonal defaults — fully functional offline.
@@ -270,6 +294,7 @@ docker compose up -d
 |----------|----------|------|
 | `admin` | `admin123` | Administrator |
 
+> ⚠️ Change the default password in production.
 
 ### Everyday commands
 
@@ -283,6 +308,8 @@ docker compose up -d
 | View logs (all) | `docker compose logs -f` |
 | View logs (API) | `docker logs retailiq-api -f` |
 | Check status | `docker compose ps` |
+
+> The `./backend` folder is bind-mounted into the API container, so Python code changes take effect after `docker restart retailiq-api` (no image rebuild needed). Frontend changes require `docker compose up -d --build client`.
 
 ---
 
