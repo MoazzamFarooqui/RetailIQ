@@ -79,3 +79,24 @@ reports/exports/*
 
 # ── Logs ───────────────────────────────────────────────────────────────────────
 *.log
+<<<<<<< HEAD
+=======
+
+# ── Backend ────────────────────────────────────────────────────────────────────
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.egg-info/
+backend/.coverage
+backend/htmlcov/
+
+# ── Client / React ─────────────────────────────────────────────────────────────
+client/node_modules/
+client/dist/
+client/build/
+client/.env
+client/.env.local
+
+# ── Docker ─────────────────────────────────────────────────────────────────────
+.env
+docker-compose.override.yml
+>>>>>>> 432887f (RetailIQ v2.0 - Dockerized full stack release)
