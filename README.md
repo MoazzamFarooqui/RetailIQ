@@ -193,15 +193,7 @@ git clone https://github.com/MoazzamFarooqui/RetailIQ.git
 cd RetailIQ
 ```
 
-### 2. Configure environment (optional)
-
-Copy the example file and add your API keys if you have them:
-
-```bash
-cp .env.example .env
-```
-
-### 3. Start the stack
+### 2. Start the stack
 
 ```bash
 docker compose up -d --build
@@ -209,7 +201,7 @@ docker compose up -d --build
 
 The first build downloads base images and installs dependencies (Python ML packages + Node modules) — allow 10–20 minutes. Subsequent starts take seconds.
 
-### 4. Verify
+### 3. Verify
 
 ```bash
 docker compose ps
