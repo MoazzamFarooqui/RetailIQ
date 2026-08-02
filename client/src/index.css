@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --primary: #1e3a5f;
-  --primary-light: #2c5282;
-  --accent: #2563eb;
+  --primary: #134e4a;
+  --primary-light: #0d9488;
+  --accent: #0d9488;
   --success: #16a34a;
   --warning: #d97706;
   --danger: #dc2626;
@@ -57,7 +57,7 @@
     @apply btn bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-sm;
   }
   .btn-gradient {
-    @apply btn bg-gradient-to-r from-brand-600 to-indigo-600 text-white hover:from-brand-700 hover:to-indigo-700 shadow-soft;
+    @apply btn bg-gradient-to-r from-brand-600 to-emerald-600 text-white hover:from-brand-700 hover:to-emerald-700 shadow-soft;
   }
   .btn-ghost {
     @apply btn text-slate-600 hover:bg-slate-100 hover:text-slate-900;

@@ -34,17 +34,17 @@ export default function Login() {
   return (
     <div className="min-h-screen flex bg-slate-50">
       {/* Left brand panel */}
-      <div className="hidden lg:flex w-[46%] relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-indigo-900 text-white flex-col justify-between p-12">
+      <div className="hidden lg:flex w-[46%] relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-emerald-950 text-white flex-col justify-between p-12">
         {/* Decorative grid */}
         <div
           className="absolute inset-0 opacity-[0.07]"
           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '48px 48px' }}
         />
         <div className="absolute -bottom-32 -right-32 w-[420px] h-[420px] rounded-full bg-brand-500/20 blur-3xl" />
-        <div className="absolute -top-24 -left-16 w-[300px] h-[300px] rounded-full bg-indigo-500/20 blur-3xl" />
+        <div className="absolute -top-24 -left-16 w-[300px] h-[300px] rounded-full bg-emerald-500/20 blur-3xl" />
 
         <div className="relative flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-indigo-500 flex items-center justify-center shadow-lg">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-emerald-500 flex items-center justify-center shadow-lg">
             <svg width="20" height="20" viewBox="0 0 64 64" fill="none">
               <path d="M16 44 V20 M32 44 V12 M48 44 V28" stroke="#fff" strokeWidth="9" strokeLinecap="round" />
               <circle cx="32" cy="44" r="6" fill="#fff" />
@@ -93,7 +93,7 @@ export default function Login() {
         <div className="w-full max-w-md animate-fade-in">
           {/* Mobile brand */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-soft">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-emerald-600 flex items-center justify-center mx-auto mb-4 shadow-soft">
               <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
                 <path d="M16 44 V20 M32 44 V12 M48 44 V28" stroke="#fff" strokeWidth="9" strokeLinecap="round" />
                 <circle cx="32" cy="44" r="6" fill="#fff" />

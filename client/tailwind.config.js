@@ -5,16 +5,16 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a5f',
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          800: '#115e59',
+          900: '#134e4a',
         },
         surface: {
           50: '#f8fafc',
@@ -38,8 +38,8 @@ export default {
       boxShadow: {
         card: '0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06)',
         'card-hover': '0 4px 12px -2px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.06)',
-        soft: '0 8px 30px -6px rgb(37 99 235 / 0.20)',
-        ring: '0 0 0 4px rgb(37 99 235 / 0.12)',
+        soft: '0 8px 30px -6px rgb(13 148 136 / 0.25)',
+        ring: '0 0 0 4px rgb(13 148 136 / 0.12)',
       },
       keyframes: {
         'fade-in': {

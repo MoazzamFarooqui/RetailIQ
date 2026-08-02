@@ -1,6 +1,6 @@
 export default function KpiCard({ label, value, sub, icon: Icon, color = 'blue', loading }) {
   const tile = {
-    blue: 'from-brand-500 to-indigo-600',
+    blue: 'from-brand-500 to-emerald-600',
     green: 'from-emerald-500 to-teal-600',
     orange: 'from-orange-500 to-amber-600',
     purple: 'from-violet-500 to-purple-600',

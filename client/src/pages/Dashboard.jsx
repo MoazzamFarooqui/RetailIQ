@@ -6,7 +6,7 @@ import { ErrorState } from '../components/common/LoadingState';
 import { formatNumber } from '../utils/helpers';
 
 const FEATURES = [
-  { icon: UploadIcon, tint: 'bg-blue-50 text-brand-600', title: 'Upload & Validate', desc: 'Upload retail sales CSVs — auto-validate, clean, and append.' },
+  { icon: UploadIcon, tint: 'bg-teal-50 text-brand-600', title: 'Upload & Validate', desc: 'Upload retail sales CSVs — auto-validate, clean, and append.' },
   { icon: SparklesIcon, tint: 'bg-violet-50 text-violet-600', title: 'AI Forecasting', desc: '7/30/90 day demand predictions with live context.' },
   { icon: Package, tint: 'bg-emerald-50 text-emerald-600', title: 'Inventory Optimization', desc: 'Safety stock, reorder points, EOQ, stockout prediction.' },
   { icon: SunIcon, tint: 'bg-amber-50 text-amber-600', title: 'Live Context', desc: 'Real-time weather and holiday integration.' },

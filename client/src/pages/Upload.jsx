@@ -84,7 +84,7 @@ export default function Upload() {
       <div className="content-section">
         <div className="content-section-title">Upload CSV</div>
         <div className="border-2 border-dashed border-slate-300 rounded-xl p-10 text-center hover:border-brand-400 hover:bg-brand-50/30 transition-all group">
-          <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
             <UploadCloud className="w-7 h-7" />
           </div>
           <p className="text-sm font-medium text-slate-700 mb-1">Drop your CSV file here or click to browse</p>
@@ -93,7 +93,7 @@ export default function Upload() {
             type="file"
             accept=".csv"
             onChange={e => setFile(e.target.files[0])}
-            className="block mx-auto text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-brand-600 file:text-white hover:file:bg-brand-700 file:transition-colors file:cursor-pointer cursor-pointer"
+            className="block mx-auto text-sm text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-600 file:text-white hover:file:bg-amber-700 file:transition-colors file:cursor-pointer cursor-pointer"
           />
           {file && (
             <div className="mt-4 flex items-center justify-center gap-2 text-sm text-slate-600 animate-fade-in">

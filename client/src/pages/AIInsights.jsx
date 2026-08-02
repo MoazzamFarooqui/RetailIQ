@@ -88,7 +88,7 @@ export default function AIInsights() {
         <div className="content-section">
           <div className="content-section-title">Current Season Context</div>
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white p-6">
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-600 to-emerald-700 text-white p-6">
               <div className="absolute -bottom-10 -right-10 w-44 h-44 rounded-full bg-white/10 blur-2xl" />
               <div className="text-4xl mb-3">{getSeasonEmoji(seasonContext.current_season)}</div>
               <div className="font-bold text-lg">{seasonContext.current_season}</div>

@@ -34,7 +34,7 @@ const NAV_GROUPS = [
 function BrandMark({ collapsed }) {
   return (
     <div className={`flex items-center gap-3 px-4 h-16 border-b border-slate-100 ${collapsed ? 'justify-center' : ''}`}>
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-soft flex-shrink-0">
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-600 flex items-center justify-center text-white shadow-soft flex-shrink-0">
         <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
           <path d="M16 44 V20 M32 44 V12 M48 44 V28" stroke="#fff" strokeWidth="9" strokeLinecap="round" />
           <circle cx="32" cy="44" r="6" fill="#fff" />
@@ -55,7 +55,7 @@ function UserCard({ user, collapsed }) {
   return (
     <div className="mx-3 mt-4 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100/60 border border-slate-200/80">
       <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-sm flex-shrink-0">
+        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-emerald-600 flex items-center justify-center text-white text-sm font-bold shadow-sm flex-shrink-0">
           {user.username?.[0]?.toUpperCase() || 'U'}
         </div>
         <div className="min-w-0 flex-1">
