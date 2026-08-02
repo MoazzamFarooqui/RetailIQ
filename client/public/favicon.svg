@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
@@ -9,3 +10,16 @@
   <path d="M20 42 V22 M32 42 V14 M44 42 V28" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
   <circle cx="32" cy="42" r="5" fill="#fff"/>
 </svg>
+=======
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#g)"/>
+  <path d="M20 42 V22 M32 42 V14 M44 42 V28" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="32" cy="42" r="5" fill="#fff"/>
+</svg>
+>>>>>>> 25f81064bfd3123f20b700242992dfd2c70041bd

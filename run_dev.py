@@ -1,5 +1,8 @@
 """One-command dev runner — installs deps, sets up DB, and starts both servers."""
-import subprocess, sys, os, shutil
+import os
+import shutil
+import subprocess
+import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 os.chdir(ROOT)
@@ -10,14 +13,18 @@ print("=" * 60)
 
 # ── 1. Backend dependencies ──────────────────────────────────────────────────
 print("\n[1/4] Installing backend dependencies...")
-subprocess.run([sys.executable, "-m", "pip", "install", "-r", "backend/requirements.txt", "-q"], check=True)
+subprocess.run(
+    [sys.executable, "-m", "pip", "install", "-r", "backend/requirements.txt", "-q"],
+    check=True,
+)
 
 # ── 2. Environment file ──────────────────────────────────────────────────────
 print("\n[2/4] Setting up environment...")
 env_path = os.path.join(ROOT, ".env")
 if not os.path.exists(env_path):
     with open(env_path, "w") as f:
-        f.write("""APP_NAME=RetailIQ API
+        f.write(
+            """APP_NAME=RetailIQ API
 APP_VERSION=2.0.0
 ENVIRONMENT=development
 DEBUG=true
@@ -32,7 +39,8 @@ HOLIDAY_API_KEY=
 CELERY_BROKER_URL=
 CELERY_RESULT_BACKEND=
 CORS_ORIGINS=["http://localhost:3000","http://localhost:5173"]
-""")
+"""
+        )
     print("  Created .env for local development")
 else:
     print("  .env already exists, skipping")
@@ -41,7 +49,9 @@ else:
 print("\n[3/4] Creating database + admin user...")
 
 # Install aiosqlite for SQLite dev mode
-subprocess.run([sys.executable, "-m", "pip", "install", "aiosqlite", "-q"], check=True)
+subprocess.run(
+    [sys.executable, "-m", "pip", "install", "aiosqlite", "-q"], check=True
+)
 
 # Run a quick init script
 init_code = """
@@ -86,13 +96,13 @@ print("  Open TWO terminals:")
 print()
 print("  Terminal 1 — Backend API:")
 print(f"    cd {ROOT}")
-print('    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000')
+print("    uvicorn app.main:app --reload --host 0.0.0.0 --port 8000")
 print()
 print("  Terminal 2 — React Frontend:")
-print(f"    cd {ROOT}\\client")
+print(f'    cd {os.path.join(ROOT, "client")}')
 print("    npm run dev")
 print()
 print("  Then open:  http://localhost:3000")
-print("  Login:     admin / admin123")
-print("  API docs:  http://localhost:8000/docs")
+print("  Login:      admin / admin123")
+print("  API docs:   http://localhost:8000/docs")
 print("=" * 60)
