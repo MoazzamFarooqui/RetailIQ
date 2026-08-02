@@ -1,7 +1,9 @@
+import { AlertTriangle, Inbox, Loader2 } from 'lucide-react';
+
 export function LoadingSpinner({ message = 'Loading...' }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3" />
+    <div className="flex flex-col items-center justify-center py-16 text-slate-400">
+      <Loader2 className="w-8 h-8 animate-spin text-brand-600 mb-3" />
       <p className="text-sm">{message}</p>
     </div>
   );
@@ -9,22 +11,25 @@ export function LoadingSpinner({ message = 'Loading...' }) {
 
 export function ErrorState({ message = 'Something went wrong', onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-      <div className="text-4xl mb-3">⚠️</div>
-      <p className="text-sm text-red-500 mb-4">{message}</p>
+    <div className="card p-8 flex flex-col items-center justify-center text-center">
+      <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-3">
+        <AlertTriangle className="w-6 h-6 text-red-500" />
+      </div>
+      <p className="text-sm font-medium text-red-600 mb-1">Something went wrong</p>
+      <p className="text-sm text-slate-500 mb-5">{message}</p>
       {onRetry && (
-        <button onClick={onRetry} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          Try Again
-        </button>
+        <button onClick={onRetry} className="btn-primary">Try Again</button>
       )}
     </div>
   );
 }
 
-export function EmptyState({ message = 'No data available', icon = '📭' }) {
+export function EmptyState({ message = 'No data available', icon: Icon = Inbox }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-gray-400">
-      <div className="text-4xl mb-3">{icon}</div>
+    <div className="flex flex-col items-center justify-center py-14 text-slate-400">
+      <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+        <Icon className="w-6 h-6 text-slate-300" />
+      </div>
       <p className="text-sm">{message}</p>
     </div>
   );

@@ -1,13 +1,31 @@
 import { useState } from 'react';
 import { inventoryService } from '../services/index';
 import KpiCard from '../components/common/KpiCard';
-import StatusBadge from '../components/common/StatusBadge';
 import { LoadingSpinner, ErrorState } from '../components/common/LoadingState';
-import { formatNumber, formatDate } from '../utils/helpers';
-import { Package, AlertTriangle, TrendingUp, ShoppingCart } from 'lucide-react';
+import { formatNumber } from '../utils/helpers';
+import { Package, AlertTriangle, TrendingUp, ShoppingCart, Rocket, AlertCircle, Boxes } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
 
-const STATUS_COLORS = { OK: '#38A169', LOW: '#D69E2E', CRITICAL: '#E53E3E', EXCESS: '#3182CE' };
+const STATUS_COLORS = { OK: '#16A34A', LOW: '#D97706', CRITICAL: '#DC2626', EXCESS: '#0EA5E9' };
+
+const tooltipStyle = {
+  contentStyle: {
+    borderRadius: '10px',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+    fontSize: '12px',
+  },
+};
+
+function ChartCard({ title, subtitle, children }) {
+  return (
+    <div className="content-section">
+      <div className="content-section-title">{title}</div>
+      {subtitle && <div className="text-xs text-slate-400 -mt-3 mb-4">{subtitle}</div>}
+      {children}
+    </div>
+  );
+}
 
 export default function Inventory() {
   const [loading, setLoading] = useState(false);
@@ -42,36 +60,58 @@ export default function Inventory() {
   ].filter(d => d.value > 0) : [];
 
   return (
-    <div className="space-y-6">
-      <h1>📦 Inventory Optimization</h1>
-      <p className="text-gray-500 text-sm -mt-4">AI-powered inventory recommendations with season & holiday demand multipliers.</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Inventory</h1>
+          <p className="page-subtitle">AI-powered recommendations with season & holiday demand multipliers</p>
+        </div>
+      </div>
 
       {/* Config */}
       <div className="content-section">
         <div className="content-section-title">Configuration</div>
-        <div className="grid md:grid-cols-4 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Service Level</label>
+            <label className="field-label">Service Level</label>
             <input type="number" step="0.01" min="0.8" max="0.999" value={config.serviceLevel}
               onChange={e => setConfig({...config, serviceLevel: parseFloat(e.target.value)})}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              className="input" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Lead Time (days)</label>
+            <label className="field-label">Lead Time (days)</label>
             <input type="number" min="1" max="60" value={config.leadTime}
               onChange={e => setConfig({...config, leadTime: parseInt(e.target.value)})}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              className="input" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Excess Threshold (days)</label>
+            <label className="field-label">Excess Threshold (days)</label>
             <input type="number" min="30" max="365" value={config.excessThreshold}
               onChange={e => setConfig({...config, excessThreshold: parseInt(e.target.value)})}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
+              className="input" />
+          </div>
+          <div>
+            <label className="field-label">Sample Size</label>
+            <input type="number" min="100" max="10000" step="100" value={config.sampleSize}
+              onChange={e => setConfig({...config, sampleSize: parseInt(e.target.value)})}
+              className="input" />
           </div>
           <div className="flex items-end">
-            <button onClick={generate} disabled={loading}
-              className="w-full py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors text-sm">
-              {loading ? 'Analyzing...' : '🚀 Generate Recommendations'}
+            <button onClick={generate} disabled={loading} className="btn-gradient w-full">
+              {loading ? (
+                <>
+                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Rocket className="w-4 h-4" />
+                  Generate Recommendations
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -83,75 +123,82 @@ export default function Inventory() {
       {result && (
         <>
           {/* KPI Row */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <KpiCard label="Total Items" value={formatNumber(metrics.total_items)} icon={Package} color="blue" />
-            <KpiCard label="Healthy" value={formatNumber(metrics.items_ok)} sub={`${metrics.total_items > 0 ? ((metrics.items_ok/metrics.total_items)*100).toFixed(0) : 0}%`} icon={TrendingUp} color="green" />
+            <KpiCard label="Healthy" value={formatNumber(metrics.items_ok)} sub={`${metrics.total_items > 0 ? ((metrics.items_ok/metrics.total_items)*100).toFixed(0) : 0}% of items`} icon={TrendingUp} color="green" />
             <KpiCard label="Low / Critical" value={formatNumber(metrics.items_low + metrics.items_critical)} sub={`${metrics.total_items > 0 ? (((metrics.items_low + metrics.items_critical)/metrics.total_items)*100).toFixed(0) : 0}% at risk`} icon={AlertTriangle} color="red" />
             <KpiCard label="Need Reorder" value={formatNumber(metrics.items_need_reorder)} icon={ShoppingCart} color="orange" />
-            <KpiCard label="Avg Days of Stock" value={metrics.avg_days_of_stock.toFixed(1)} icon={Package} color="purple" />
+            <KpiCard label="Avg Days of Stock" value={metrics.avg_days_of_stock.toFixed(1)} icon={Boxes} color="purple" />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-6">
             {/* Status Distribution */}
-            <div className="content-section">
-              <div className="content-section-title">Status Distribution</div>
-              <ResponsiveContainer width="100%" height={250}>
+            <ChartCard title="Status Distribution" subtitle="Share of items by inventory health">
+              <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
-                  <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${(percent*100).toFixed(0)}%`}>
+                  <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={88} paddingAngle={3} label={({ name, percent }) => `${name} ${(percent*100).toFixed(0)}%`} labelLine={false}>
                     {statusData.map((d, i) => <Cell key={i} fill={STATUS_COLORS[d.name] || '#999'} />)}
                   </Pie>
-                  <Tooltip />
-                  <Legend />
+                  <Tooltip {...tooltipStyle} />
+                  <Legend iconType="circle" iconSize={9} wrapperStyle={{ fontSize: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
+            </ChartCard>
 
             {/* Count by Status */}
-            <div className="content-section">
-              <div className="content-section-title">Count by Status</div>
-              <ResponsiveContainer width="100%" height={250}>
+            <ChartCard title="Count by Status" subtitle="Number of items in each health category">
+              <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={statusData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} />
-                  <Tooltip />
-                  <Bar dataKey="value" radius={[4,4,0,0]}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={{ stroke: '#e2e8f0' }} />
+                  <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} />
+                  <Tooltip {...tooltipStyle} />
+                  <Bar dataKey="value" radius={[6, 6, 0, 0]} name="Items">
                     {statusData.map((d, i) => <Cell key={i} fill={STATUS_COLORS[d.name] || '#999'} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-            </div>
+            </ChartCard>
           </div>
 
           {/* Stockout predictions */}
           {result.stockout_predictions?.length > 0 && (
             <div className="content-section">
-              <div className="content-section-title">⚠️ Stockout Predictions</div>
-              <div className="overflow-x-auto max-h-64 overflow-y-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="text-left py-2 px-3 font-medium text-gray-500">Item</th>
-                      <th className="text-left py-2 px-3 font-medium text-gray-500">Store</th>
-                      <th className="text-right py-2 px-3 font-medium text-gray-500">Stock</th>
-                      <th className="text-right py-2 px-3 font-medium text-gray-500">Days Left</th>
-                      <th className="text-right py-2 px-3 font-medium text-gray-500">Predicted Date</th>
-                      <th className="text-center py-2 px-3 font-medium text-gray-500">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.stockout_predictions.map((s, i) => (
-                      <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
-                        <td className="py-2 px-3 font-medium">{s.item_id}</td>
-                        <td className="py-2 px-3">{s.store_id}</td>
-                        <td className="py-2 px-3 text-right">{formatNumber(s.current_stock)}</td>
-                        <td className="py-2 px-3 text-right font-bold">{s.days_remaining.toFixed(0)}</td>
-                        <td className="py-2 px-3 text-right">{s.predicted_stockout_date}</td>
-                        <td className="py-2 px-3 text-center">{s.is_critical ? <span className="text-red-600 font-bold">CRITICAL</span> : <span className="text-yellow-600">Warning</span>}</td>
+              <div className="content-section-title">
+                <AlertCircle className="w-4 h-4 text-red-500" />
+                Stockout Predictions
+              </div>
+              <div className="scroll-thin max-h-72">
+                <div className="table-wrap">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Store</th>
+                        <th className="text-right">Stock</th>
+                        <th className="text-right">Days Left</th>
+                        <th className="text-right">Predicted Date</th>
+                        <th className="text-center">Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {result.stockout_predictions.map((s, i) => (
+                        <tr key={i}>
+                          <td className="font-medium text-slate-800">{s.item_id}</td>
+                          <td>{s.store_id}</td>
+                          <td className="num">{formatNumber(s.current_stock)}</td>
+                          <td className="num font-bold">{s.days_remaining.toFixed(0)}</td>
+                          <td className="num">{s.predicted_stockout_date}</td>
+                          <td className="text-center">
+                            {s.is_critical
+                              ? <span className="badge-critical">Critical</span>
+                              : <span className="badge-low">Warning</span>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -159,29 +206,34 @@ export default function Inventory() {
           {/* Overstock */}
           {result.overstock_items?.length > 0 && (
             <div className="content-section">
-              <div className="content-section-title">📦 Overstock Detection</div>
-              <p className="text-sm text-gray-500 mb-3">{result.overstock_items.length} items with excess inventory</p>
-              <div className="overflow-x-auto max-h-64 overflow-y-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="text-left py-2 px-3 font-medium text-gray-500">Item</th>
-                      <th className="text-right py-2 px-3 font-medium text-gray-500">Stock</th>
-                      <th className="text-right py-2 px-3 font-medium text-gray-500">Days of Stock</th>
-                      <th className="text-right py-2 px-3 font-medium text-gray-500">Excess Units</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.overstock_items.map((o, i) => (
-                      <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
-                        <td className="py-2 px-3 font-medium">{o.item_id}</td>
-                        <td className="py-2 px-3 text-right">{formatNumber(o.current_stock)}</td>
-                        <td className="py-2 px-3 text-right">{o.days_of_stock.toFixed(0)}</td>
-                        <td className="py-2 px-3 text-right text-orange-600 font-medium">{formatNumber(o.excess_units)}</td>
+              <div className="content-section-title">
+                <Boxes className="w-4 h-4 text-sky-500" />
+                Overstock Detection
+              </div>
+              <p className="text-sm text-slate-500 mb-3">{result.overstock_items.length} items with excess inventory</p>
+              <div className="scroll-thin max-h-72">
+                <div className="table-wrap">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th className="text-right">Stock</th>
+                        <th className="text-right">Days of Stock</th>
+                        <th className="text-right">Excess Units</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {result.overstock_items.map((o, i) => (
+                        <tr key={i}>
+                          <td className="font-medium text-slate-800">{o.item_id}</td>
+                          <td className="num">{formatNumber(o.current_stock)}</td>
+                          <td className="num">{o.days_of_stock.toFixed(0)}</td>
+                          <td className="num font-medium text-orange-600">{formatNumber(o.excess_units)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

@@ -19,12 +19,22 @@ export function formatDate(dateStr) {
 
 export function getStatusColor(status) {
   const colors = {
-    OK: 'text-green-600 bg-green-50 border-green-200',
-    LOW: 'text-yellow-600 bg-yellow-50 border-yellow-200',
+    OK: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+    LOW: 'text-amber-600 bg-amber-50 border-amber-200',
     CRITICAL: 'text-red-600 bg-red-50 border-red-200',
-    EXCESS: 'text-blue-600 bg-blue-50 border-blue-200',
+    EXCESS: 'text-sky-600 bg-sky-50 border-sky-200',
   };
-  return colors[status] || 'text-gray-600 bg-gray-50 border-gray-200';
+  return colors[status] || 'text-slate-600 bg-slate-50 border-slate-200';
+}
+
+export function getStatusBadgeClass(status) {
+  const classes = {
+    OK: 'badge-ok',
+    LOW: 'badge-low',
+    CRITICAL: 'badge-critical',
+    EXCESS: 'badge-excess',
+  };
+  return classes[status] || 'badge-neutral';
 }
 
 export function getSeasonEmoji(season) {

@@ -3,47 +3,120 @@
 @tailwind utilities;
 
 :root {
-  --primary: #1E3A5F;
-  --primary-light: #2C5282;
-  --accent: #2563EB;
-  --success: #38A169;
-  --warning: #D69E2E;
-  --danger: #E53E3E;
+  --primary: #1e3a5f;
+  --primary-light: #2c5282;
+  --accent: #2563eb;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-slate-100 text-slate-800 antialiased;
   }
-  h1 { @apply text-2xl font-bold text-[#1E3A5F] tracking-tight; }
-  h2 { @apply text-xl font-semibold text-[#2C5282] border-b border-gray-200 pb-2 mb-4; }
-  h3 { @apply text-lg font-semibold text-[#1E3A5F] mb-3; }
+  h1 { @apply text-2xl font-bold text-slate-900 tracking-tight; }
+  h2 { @apply text-lg font-semibold text-slate-800; }
+  h3 { @apply text-base font-semibold text-slate-800; }
+  ::selection { @apply bg-brand-600 text-white; }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-track { @apply bg-transparent; }
+  *::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+  *::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
 }
 
 @layer components {
-  .kpi-card {
-    @apply bg-white rounded-xl p-4 border border-gray-100 shadow-sm transition-all duration-200;
+  /* ---- Cards ---- */
+  .card {
+    @apply bg-white rounded-xl border border-slate-200 shadow-card;
   }
-  .kpi-card:hover {
-    @apply shadow-md border-blue-200;
-  }
-  .kpi-card-label {
-    @apply text-xs font-medium text-gray-500 uppercase tracking-wide mb-1;
-  }
-  .kpi-card-value {
-    @apply text-2xl font-bold text-gray-900;
-  }
-  .kpi-card-sub {
-    @apply text-xs text-gray-400 mt-0.5;
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-card-hover hover:border-brand-200;
   }
   .content-section {
-    @apply bg-white rounded-xl p-6 mb-6 border border-gray-100 shadow-sm;
+    @apply card p-5 sm:p-6;
   }
   .content-section-title {
-    @apply text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4;
+    @apply text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2;
   }
-  .status-ok { @apply text-green-600 bg-green-50 border-green-200; }
-  .status-low { @apply text-yellow-600 bg-yellow-50 border-yellow-200; }
-  .status-critical { @apply text-red-600 bg-red-50 border-red-200; }
-  .status-excess { @apply text-blue-600 bg-blue-50 border-blue-200; }
+
+  /* ---- Page header ---- */
+  .page-header { @apply flex flex-wrap items-start justify-between gap-4; }
+  .page-title { @apply text-2xl font-bold text-slate-900 tracking-tight; }
+  .page-subtitle { @apply text-sm text-slate-500 mt-1; }
+
+  /* ---- Buttons ---- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 shadow-sm;
+  }
+  .btn-gradient {
+    @apply btn bg-gradient-to-r from-brand-600 to-indigo-600 text-white hover:from-brand-700 hover:to-indigo-700 shadow-soft;
+  }
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100 hover:text-slate-900;
+  }
+  .btn-success {
+    @apply btn bg-emerald-600 text-white hover:bg-emerald-700;
+  }
+
+  /* ---- Form controls ---- */
+  .field-label { @apply block text-sm font-medium text-slate-600 mb-1.5; }
+  .input {
+    @apply w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-400 transition-all outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15;
+  }
+  .select {
+    @apply w-full px-3 py-2.5 bg-white border border-slate-300 rounded-lg text-sm text-slate-900 transition-all outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15;
+  }
+
+  /* ---- Tables ---- */
+  .table-wrap { @apply overflow-x-auto -mx-5 sm:-mx-6 px-5 sm:px-6; }
+  table.data-table { @apply w-full text-sm; }
+  .data-table thead th {
+    @apply text-left py-3 px-4 font-semibold text-slate-500 uppercase tracking-wider text-xs whitespace-nowrap border-b border-slate-200 bg-slate-50/60;
+  }
+  .data-table thead th:first-child { @apply rounded-tl-lg; }
+  .data-table thead th:last-child { @apply rounded-tr-lg; }
+  .data-table tbody td { @apply py-3 px-4 border-b border-slate-100 whitespace-nowrap; }
+  .data-table tbody tr { @apply transition-colors hover:bg-brand-50/40; }
+  .data-table tbody tr:last-child td { @apply border-b-0; }
+  .data-table .num { @apply text-right tabular-nums; }
+
+  /* ---- Badges ---- */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap;
+  }
+  .badge-ok { @apply badge bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-200; }
+  .badge-low { @apply badge bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-200; }
+  .badge-critical { @apply badge bg-red-50 text-red-700 ring-1 ring-inset ring-red-200; }
+  .badge-excess { @apply badge bg-sky-50 text-sky-700 ring-1 ring-inset ring-sky-200; }
+  .badge-neutral { @apply badge bg-slate-100 text-slate-600 ring-1 ring-inset ring-slate-200; }
+
+  /* ---- KPI card ---- */
+  .kpi-card {
+    @apply card p-4 sm:p-5 relative overflow-hidden transition-all duration-200 card-hover;
+  }
+  .kpi-card-label {
+    @apply text-xs font-semibold text-slate-500 uppercase tracking-wide;
+  }
+  .kpi-card-value {
+    @apply text-2xl font-bold text-slate-900 tabular-nums tracking-tight;
+  }
+  .kpi-card-sub {
+    @apply text-xs text-slate-400 mt-0.5;
+  }
+
+  /* ---- Status / context chips ---- */
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm text-sm text-slate-600;
+  }
+
+  /* ---- Misc ---- */
+  .scroll-thin { @apply overflow-y-auto; scrollbar-width: thin; }
 }

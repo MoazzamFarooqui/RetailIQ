@@ -3,8 +3,17 @@ import { modelService } from '../services/index';
 import KpiCard from '../components/common/KpiCard';
 import { LoadingSpinner, ErrorState } from '../components/common/LoadingState';
 import { formatNumber } from '../utils/helpers';
-import { Brain, BarChart3, TrendingUp } from 'lucide-react';
+import { Brain, BarChart3, TrendingUp, Activity, CheckCircle2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+
+const tooltipStyle = {
+  contentStyle: {
+    borderRadius: '10px',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+    fontSize: '12px',
+  },
+};
 
 export default function ModelInsights() {
   const [features, setFeatures] = useState(null);
@@ -36,35 +45,40 @@ export default function ModelInsights() {
   if (error) return <ErrorState message={error} onRetry={loadData} />;
 
   return (
-    <div className="space-y-6">
-      <h1>🧠 Model Insights & Explainability</h1>
-      <p className="text-gray-500 text-sm -mt-4">Understand how the forecasting model works — feature importance and performance.</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Model Insights</h1>
+          <p className="page-subtitle">How the forecasting model works — feature importance and performance</p>
+        </div>
+      </div>
 
       {/* Model Info */}
       {modelInfo && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <KpiCard label="Best Model" value={modelInfo.model_type.replace('_', ' ')} icon={Brain} color="blue" />
           <KpiCard label="MAE" value={modelInfo.mae?.toFixed(2) || '—'} icon={BarChart3} color="green" />
           <KpiCard label="RMSE" value={modelInfo.rmse?.toFixed(2) || '—'} icon={TrendingUp} color="orange" />
-          <KpiCard label="MAPE" value={modelInfo.mape ? `${modelInfo.mape.toFixed(2)}%` : '—'} icon={BarChart3} color="purple" />
+          <KpiCard label="MAPE" value={modelInfo.mape ? `${modelInfo.mape.toFixed(2)}%` : '—'} icon={Activity} color="purple" />
         </div>
       )}
 
       {/* Feature Importance */}
       <div className="content-section">
         <div className="content-section-title">Feature Importance</div>
+        <p className="text-xs text-slate-400 -mt-3 mb-4">Top features driving forecast predictions</p>
         {features && features.length > 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={features.slice(0, 15)} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis type="number" tick={{ fontSize: 11 }} />
-              <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 11 }} />
-              <Tooltip />
-              <Bar dataKey="importance" fill="#2563EB" radius={[0, 4, 4, 0]} />
+          <ResponsiveContainer width="100%" height={420}>
+            <BarChart data={features.slice(0, 15)} layout="vertical" margin={{ left: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} />
+              <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 11, fill: '#475569' }} tickLine={false} axisLine={false} />
+              <Tooltip {...tooltipStyle} />
+              <Bar dataKey="importance" fill="#2563EB" radius={[0, 6, 6, 0]} name="Importance" />
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-gray-400 text-sm">No feature importance data available. Train a model first.</p>
+          <p className="text-slate-400 text-sm">No feature importance data available. Train a model first.</p>
         )}
       </div>
 
@@ -72,36 +86,42 @@ export default function ModelInsights() {
       <div className="content-section">
         <div className="content-section-title">Training History</div>
         {history && history.length > 0 ? (
-          <div className="overflow-x-auto max-h-64 overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-2 px-3 font-medium text-gray-500">Model</th>
-                  <th className="text-right py-2 px-3 font-medium text-gray-500">MAE</th>
-                  <th className="text-right py-2 px-3 font-medium text-gray-500">RMSE</th>
-                  <th className="text-right py-2 px-3 font-medium text-gray-500">MAPE</th>
-                  <th className="text-right py-2 px-3 font-medium text-gray-500">R²</th>
-                  <th className="text-right py-2 px-3 font-medium text-gray-500">Features</th>
-                  <th className="text-center py-2 px-3 font-medium text-gray-500">Best</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((m, i) => (
-                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
-                    <td className="py-2 px-3 font-medium">{m.model_type.replace('_', ' ')}</td>
-                    <td className="py-2 px-3 text-right">{m.mae?.toFixed(2) || '—'}</td>
-                    <td className="py-2 px-3 text-right">{m.rmse?.toFixed(2) || '—'}</td>
-                    <td className="py-2 px-3 text-right">{m.mape ? `${m.mape.toFixed(2)}%` : '—'}</td>
-                    <td className="py-2 px-3 text-right">{m.r2?.toFixed(4) || '—'}</td>
-                    <td className="py-2 px-3 text-right">{m.feature_count || '—'}</td>
-                    <td className="py-2 px-3 text-center">{m.is_best ? <span className="text-green-600 font-bold">✓</span> : ''}</td>
+          <div className="scroll-thin max-h-72">
+            <div className="table-wrap">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th className="text-right">MAE</th>
+                    <th className="text-right">RMSE</th>
+                    <th className="text-right">MAPE</th>
+                    <th className="text-right">R²</th>
+                    <th className="text-right">Features</th>
+                    <th className="text-center">Best</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {history.map((m, i) => (
+                    <tr key={i}>
+                      <td className="font-medium text-slate-800">{m.model_type.replace('_', ' ')}</td>
+                      <td className="num">{m.mae?.toFixed(2) || '—'}</td>
+                      <td className="num">{m.rmse?.toFixed(2) || '—'}</td>
+                      <td className="num">{m.mape ? `${m.mape.toFixed(2)}%` : '—'}</td>
+                      <td className="num">{m.r2?.toFixed(4) || '—'}</td>
+                      <td className="num">{m.feature_count || '—'}</td>
+                      <td className="text-center">
+                        {m.is_best
+                          ? <span className="inline-flex items-center gap-1 text-emerald-600 font-semibold text-xs"><CheckCircle2 className="w-4 h-4" />Best</span>
+                          : <span className="text-slate-300">—</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : (
-          <p className="text-gray-400 text-sm">No training history available.</p>
+          <p className="text-slate-400 text-sm">No training history available.</p>
         )}
       </div>
     </div>

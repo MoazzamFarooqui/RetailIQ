@@ -1,9 +1,26 @@
 import { useState, useEffect } from 'react';
 import { insightsService } from '../services/index';
-import KpiCard from '../components/common/KpiCard';
 import { LoadingSpinner, ErrorState } from '../components/common/LoadingState';
 import { getSeasonEmoji } from '../utils/helpers';
-import { Sparkles, Brain, TrendingUp } from 'lucide-react';
+import { Sparkles, Brain, Lightbulb, TrendingDown, PartyPopper, Loader2, CalendarDays, AlertCircle as AlertCircleIcon } from 'lucide-react';
+
+const severityStyles = {
+  info: {
+    card: 'border-brand-100 bg-brand-50/50',
+    badge: 'bg-brand-100 text-brand-700',
+    icon: Brain,
+  },
+  warning: {
+    card: 'border-amber-200 bg-amber-50/60',
+    badge: 'bg-amber-100 text-amber-800',
+    icon: TrendingDown,
+  },
+  error: {
+    card: 'border-red-200 bg-red-50/60',
+    badge: 'bg-red-100 text-red-700',
+    icon: AlertCircleIcon,
+  },
+};
 
 export default function AIInsights() {
   const [seasonContext, setSeasonContext] = useState(null);
@@ -44,23 +61,25 @@ export default function AIInsights() {
   if (loading) return <LoadingSpinner message="Loading insights..." />;
   if (error) return <ErrorState message={error} onRetry={loadData} />;
 
-  const severityColors = {
-    info: 'bg-blue-50 border-blue-100 text-blue-700',
-    warning: 'bg-yellow-50 border-yellow-100 text-yellow-700',
-    error: 'bg-red-50 border-red-100 text-red-700',
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 animate-fade-in">
+      <div className="page-header">
         <div>
-          <h1>✨ AI Business Insights</h1>
-          <p className="text-gray-500 text-sm mt-1">Automated analysis with season, weather, and holiday awareness.</p>
+          <h1 className="page-title">AI Insights</h1>
+          <p className="page-subtitle">Automated analysis with season, weather, and holiday awareness</p>
         </div>
-        <button onClick={generateInsights} disabled={generating}
-          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 transition-all text-sm flex items-center gap-2">
-          <Sparkles className="w-4 h-4" />
-          {generating ? 'Generating...' : 'Generate Insights'}
+        <button onClick={generateInsights} disabled={generating} className="btn-gradient">
+          {generating ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4" />
+              Generate Insights
+            </>
+          )}
         </button>
       </div>
 
@@ -68,42 +87,47 @@ export default function AIInsights() {
       {seasonContext && (
         <div className="content-section">
           <div className="content-section-title">Current Season Context</div>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-              <div className="text-3xl mb-2">{getSeasonEmoji(seasonContext.current_season)}</div>
-              <div className="font-semibold text-gray-800">{seasonContext.current_season}</div>
-              <div className="text-sm text-gray-600 mt-1">{seasonContext.season_advice}</div>
+          <div className="grid lg:grid-cols-2 gap-6">
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white p-6">
+              <div className="absolute -bottom-10 -right-10 w-44 h-44 rounded-full bg-white/10 blur-2xl" />
+              <div className="text-4xl mb-3">{getSeasonEmoji(seasonContext.current_season)}</div>
+              <div className="font-bold text-lg">{seasonContext.current_season}</div>
+              <p className="text-brand-50/90 text-sm mt-2 leading-relaxed max-w-sm">{seasonContext.season_advice}</p>
             </div>
-            <div className="space-y-2">
+
+            <div className="space-y-4">
               {seasonContext.high_demand_products?.length > 0 && (
                 <div>
-                  <span className="text-xs font-semibold text-green-600 uppercase">High Demand</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
+                  <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">High Demand</span>
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {seasonContext.high_demand_products.slice(0, 10).map((p, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-green-50 text-green-700 rounded text-xs border border-green-200">{p}</span>
+                      <span key={i} className="badge-ok">{p}</span>
                     ))}
                   </div>
                 </div>
               )}
               {seasonContext.low_demand_products?.length > 0 && (
                 <div>
-                  <span className="text-xs font-semibold text-orange-600 uppercase">Low Demand</span>
-                  <div className="flex flex-wrap gap-1 mt-1">
+                  <span className="text-xs font-semibold text-orange-600 uppercase tracking-wider">Low Demand</span>
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {seasonContext.low_demand_products.slice(0, 10).map((p, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-orange-50 text-orange-700 rounded text-xs border border-orange-200">{p}</span>
+                      <span key={i} className="badge-low">{p}</span>
                     ))}
                   </div>
                 </div>
               )}
               {seasonContext.upcoming_holidays?.length > 0 && (
                 <div>
-                  <span className="text-xs font-semibold text-purple-600 uppercase">Upcoming Holidays</span>
-                  <div className="space-y-1 mt-1">
+                  <span className="text-xs font-semibold text-violet-600 uppercase tracking-wider flex items-center gap-1">
+                    <PartyPopper className="w-3.5 h-3.5" />
+                    Upcoming Holidays
+                  </span>
+                  <div className="space-y-1.5 mt-1.5">
                     {seasonContext.upcoming_holidays.map((h, i) => (
                       <div key={i} className="text-sm flex items-center gap-2">
-                        <span className="text-purple-500">•</span>
-                        <span className="font-medium">{h.name}</span>
-                        <span className="text-gray-400">{h.date?.substring(0, 10)}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                        <span className="font-medium text-slate-800">{h.name}</span>
+                        <span className="text-slate-400">{h.date?.substring(0, 10)}</span>
                       </div>
                     ))}
                   </div>
@@ -116,26 +140,38 @@ export default function AIInsights() {
 
       {/* Insights List */}
       <div className="content-section">
-        <div className="content-section-title">Generated Insights</div>
+        <div className="content-section-title">
+          <Lightbulb className="w-4 h-4 text-amber-500" />
+          Generated Insights
+        </div>
         {insights && insights.length > 0 ? (
           <div className="space-y-3">
-            {insights.map((insight, i) => (
-              <div key={i} className={`p-4 rounded-xl border ${severityColors[insight.severity] || 'bg-gray-50 border-gray-100'}`}>
-                <div className="flex items-start gap-3">
-                  <Brain className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">{insight.category}</span>
-                      <span className="text-xs text-gray-400">{new Date(insight.created_at).toLocaleDateString()}</span>
+            {insights.map((insight, i) => {
+              const style = severityStyles[insight.severity] || severityStyles.info;
+              const Icon = style.icon;
+              return (
+                <div key={i} className={`p-4 sm:p-5 rounded-xl border ${style.card} animate-fade-in`}>
+                  <div className="flex items-start gap-3.5">
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${style.badge}`}>
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <div className="text-sm" dangerouslySetInnerHTML={{ __html: insight.insight_text }} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{insight.category}</span>
+                        <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                          <CalendarDays className="w-3 h-3" />
+                          {new Date(insight.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="text-sm text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.insight_text }} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <p className="text-gray-400 text-sm">No insights generated yet. Click "Generate Insights" to start.</p>
+          <p className="text-slate-400 text-sm">No insights generated yet. Click "Generate Insights" to start.</p>
         )}
       </div>
     </div>
