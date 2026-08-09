@@ -65,9 +65,19 @@ The platform is built as a modern two tier web application:
 
 # Screenshots
 
+## Login & Authentication
+
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/7b756f59-ce09-45b5-9a58-edc137d6718e" />
 
+---
+
+## Executive Dashboard
+
 <img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/3cd8776d-adf3-4376-a269-8c2f7d232ec1" />
+
+---
+
+## Sales Analytics & Performance Trends
 
 <img width="1916" height="692" alt="image" src="https://github.com/user-attachments/assets/5a03d3ce-11e5-4c62-bef0-0f5bac503f62" />
 
@@ -76,6 +86,8 @@ The platform is built as a modern two tier web application:
 <img width="1197" height="667" alt="image" src="https://github.com/user-attachments/assets/11881414-f26d-4d1b-a19f-b272f2471645" />
 
 <img width="1202" height="378" alt="image" src="https://github.com/user-attachments/assets/ebc7061b-2376-451f-93fa-6c091cbc2b77" />
+
+---
 
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/a215e72f-6e90-46e6-92ae-25b8b1b35523" />
 
