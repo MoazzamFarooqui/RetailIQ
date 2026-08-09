@@ -24,3 +24,4 @@ class AdvisorConversation(Base):
     def __repr__(self) -> str:
         return f"<AdvisorConversation {self.user_id}: {self.question[:50]}...>"
 
+

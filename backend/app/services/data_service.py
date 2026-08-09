@@ -395,3 +395,4 @@ class TenantDataService:
             "days_covered": (max_date - min_date).days if min_date and max_date else 0,
         }
 
+

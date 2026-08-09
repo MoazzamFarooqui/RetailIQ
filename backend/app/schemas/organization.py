@@ -88,3 +88,4 @@ class InviteAcceptResponse(BaseModel):
     role: str
     user_id: str
 
+

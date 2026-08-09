@@ -48,3 +48,4 @@ class OrganizationMember(Base):
     def __repr__(self) -> str:
         return f"<OrganizationMember {self.user_id}@{self.organization_id} ({self.role.value})>"
 
+

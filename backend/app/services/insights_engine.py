@@ -205,3 +205,4 @@ class InsightsEngine:
             "upcoming_holidays": upcoming.to_dict("records") if len(upcoming) > 0 else [],
         }
 
+

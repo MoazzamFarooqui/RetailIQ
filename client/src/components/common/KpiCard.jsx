@@ -35,3 +35,4 @@ export default function KpiCard({ label, value, sub, icon: Icon, color = 'blue',
     </div>
   );
 }
+

@@ -48,3 +48,4 @@ class ForecastHistoryResponse(BaseModel):
     headers: list[ForecastHeaderResponse]
     total: int
 
+

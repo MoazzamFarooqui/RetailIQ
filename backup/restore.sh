@@ -31,3 +31,4 @@ for table in users organizations sales forecast_headers model_registry; do
 done
 
 echo "[restore] OK — backup is restorable."
+

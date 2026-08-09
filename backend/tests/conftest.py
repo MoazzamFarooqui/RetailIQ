@@ -39,3 +39,4 @@ async def db_session():
         yield session
         await session.close()
     await engine.dispose()
+

@@ -193,3 +193,4 @@ async def get_day_of_week_analysis(
         for idx, row in dow_avg.items()
     ]
 
+

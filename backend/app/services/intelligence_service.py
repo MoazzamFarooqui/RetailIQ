@@ -210,3 +210,4 @@ class IntelligenceService:
             products.append(IntelligenceService.product_intelligence(df, item_id))
         return sorted(products, key=lambda p: p.get("total_sales", 0), reverse=True)
 
+

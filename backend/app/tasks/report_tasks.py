@@ -23,3 +23,4 @@ def generate_pdf_report_task(self, forecast_id: str = None, inventory_id: str = 
         logger.error(f"PDF report task failed: {e}")
         return {"status": "error", "message": str(e)}
 
+

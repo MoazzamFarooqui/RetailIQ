@@ -177,3 +177,4 @@ def test_role_gate_enforced(client):
     }, headers=viewer_headers)
     assert r.status_code == 403, r.text
 
+

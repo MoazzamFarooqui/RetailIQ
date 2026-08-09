@@ -76,3 +76,4 @@ async def get_current_holiday_context(
         "upcoming_holidays": holiday_svc.get_upcoming_holidays(now, limit=3).to_dict("records"),
     }
 
+

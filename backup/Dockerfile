@@ -7,3 +7,4 @@ COPY backup.sh /backup/backup.sh
 RUN chmod +x /backup/backup.sh
 
 ENTRYPOINT ["/bin/sh", "/backup/backup.sh"]
+

@@ -57,3 +57,4 @@ class AnalyticsResponse(BaseModel):
     seasonal_breakdown: list[SeasonalBreakdown] = []
     day_of_week: list[DayOfWeekAnalysis] = []
 
+

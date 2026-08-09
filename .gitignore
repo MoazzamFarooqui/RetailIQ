@@ -107,3 +107,4 @@ client/.env.local
 .env
 docker-compose.override.yml
 >>>>>>> 432887f (RetailIQ v2.0 - Dockerized full stack release)
+

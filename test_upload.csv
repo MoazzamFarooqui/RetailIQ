@@ -1079,3 +1079,4 @@ date,item_id,store_id,sales,sell_price,category
 2026-06-29,SKU002,STORE_B,33,12.06,Grocery
 2026-06-29,SKU003,STORE_A,22,12.82,Grocery
 2026-06-29,SKU003,STORE_B,44,11.0,Grocery
+

@@ -109,3 +109,4 @@ class ModelExplainer:
         shap_vals = dict(sorted(shap_vals.items(), key=lambda x: abs(x[1]["shap_value"]), reverse=True))
         return {"prediction": pred, "base_value": ev, "shap_values": shap_vals}
 
+

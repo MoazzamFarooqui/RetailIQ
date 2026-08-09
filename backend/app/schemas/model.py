@@ -55,3 +55,4 @@ class TrainResponse(BaseModel):
     message: str
     is_async: bool = True
 
+

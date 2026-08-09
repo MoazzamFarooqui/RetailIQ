@@ -81,3 +81,4 @@ class ProductIntelligence(BaseModel):
     days_covered: int | None = None
     error: str | None = None
 
+

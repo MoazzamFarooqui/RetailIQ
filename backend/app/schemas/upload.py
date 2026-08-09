@@ -38,3 +38,4 @@ class ValidationResult(BaseModel):
     warnings: list[str] = []
     errors: list[str] = []
 
+

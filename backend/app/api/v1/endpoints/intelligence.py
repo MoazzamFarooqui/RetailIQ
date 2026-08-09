@@ -132,3 +132,4 @@ async def product_detail(
         raise HTTPException(status_code=404, detail=result["error"])
     return result
 
+

@@ -112,3 +112,4 @@ class ForecastAccuracy(Base):
     def __repr__(self) -> str:
         return f"<ForecastAccuracy {self.product_id}@{self.store_id} h{self.horizon_days} WAPE={self.wape:.2f}>"
 
+

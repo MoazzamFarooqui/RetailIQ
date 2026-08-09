@@ -234,3 +234,4 @@ async def flag_degradation(
     await db.refresh(artifact)
     return artifact
 
+

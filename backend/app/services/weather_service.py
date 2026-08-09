@@ -369,3 +369,4 @@ class WeatherService:
             multiplier *= 1.1
         return multiplier
 
+

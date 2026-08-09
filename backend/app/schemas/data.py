@@ -26,3 +26,4 @@ class OrgDataSummary(BaseModel):
     date_end: str | None
     days_covered: int
 
+

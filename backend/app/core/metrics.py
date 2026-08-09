@@ -79,3 +79,4 @@ def metrics_response():
         "text/plain; version=0.0.4; charset=utf-8",
     )
 
+

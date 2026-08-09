@@ -255,3 +255,4 @@ class ReportingService:
 
         return bytes(pdf.output())
 
+

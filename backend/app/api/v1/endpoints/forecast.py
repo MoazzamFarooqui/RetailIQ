@@ -143,3 +143,4 @@ async def get_forecast(
         details=[ForecastRecord.model_validate(d) for d in header.details],
     )
 
+

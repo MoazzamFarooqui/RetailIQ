@@ -128,3 +128,4 @@ def generate_daily_insights(self):
         logger.error(f"Daily insights task failed: {e}")
         return {"status": "error", "message": str(e)}
 
+

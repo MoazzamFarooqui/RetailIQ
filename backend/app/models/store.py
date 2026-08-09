@@ -26,3 +26,4 @@ class Store(Base):
     def __repr__(self) -> str:
         return f"<Store {self.store_code} ({self.name})>"
 
+

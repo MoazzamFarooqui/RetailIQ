@@ -141,3 +141,4 @@ async def change_password(
     current_user.hashed_password = hash_password(request.new_password)
     await db.commit()
 
+

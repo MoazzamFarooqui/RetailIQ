@@ -26,3 +26,4 @@ class AlertCounts(BaseModel):
     critical: int
     high: int
 
+

@@ -91,3 +91,4 @@ class RegistryOverview(BaseModel):
     degraded: bool
     needs_retrain: bool
 
+

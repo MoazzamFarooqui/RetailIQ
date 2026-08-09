@@ -96,3 +96,4 @@ async def trigger_detection(
     await db.commit()
     return {"status": "ok", "created": counts}
 
+

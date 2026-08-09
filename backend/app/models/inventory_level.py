@@ -38,3 +38,4 @@ class InventoryLevel(Base):
     def __repr__(self) -> str:
         return f"<InventoryLevel {self.product_id}@{self.store_id}: {self.quantity_on_hand}>"
 
+

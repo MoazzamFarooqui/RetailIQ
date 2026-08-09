@@ -155,3 +155,4 @@ async def list_task_templates(current_user: User = Depends(require_org_roles(["o
             templates.append({"name": name, "description": task.__doc__ or ""})
     return {"tasks": sorted(templates, key=lambda t: t["name"])}
 
+

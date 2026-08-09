@@ -26,3 +26,4 @@ api_router.include_router(model.router, prefix="/model", tags=["Model Training"]
 api_router.include_router(insights.router, prefix="/insights", tags=["Insights"])
 api_router.include_router(weather.router, prefix="/weather", tags=["Weather"])
 
+

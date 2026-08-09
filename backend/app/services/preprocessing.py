@@ -67,3 +67,4 @@ class DataPreprocessor:
         df["sales"] = pd.to_numeric(df["sales"], errors="coerce").fillna(0)
         return df
 
+

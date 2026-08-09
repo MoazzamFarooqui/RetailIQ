@@ -24,3 +24,4 @@ class BusinessInsight(Base):
     def __repr__(self) -> str:
         return f"<BusinessInsight {self.insight_type} ({self.severity})>"
 
+

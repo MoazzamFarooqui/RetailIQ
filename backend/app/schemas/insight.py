@@ -36,3 +36,4 @@ class WeatherContext(BaseModel):
     pre_holiday_window: dict | None = None
     demand_multiplier: float
 
+

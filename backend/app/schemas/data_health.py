@@ -33,3 +33,4 @@ class AnomalyReport(BaseModel):
     anomalies: list[Anomaly]
     total: int
 
+

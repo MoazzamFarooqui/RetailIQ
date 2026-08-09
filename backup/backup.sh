@@ -38,3 +38,4 @@ echo "[backup] pruning local copies older than ${KEEP_LOCAL} days"
 find /backup/local -name 'retailiq-*.sql.gz' -mtime +"$KEEP_LOCAL" -delete
 
 echo "[backup] done"
+

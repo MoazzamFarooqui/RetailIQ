@@ -52,3 +52,4 @@ def debug_task(self):
     print(f"Request: {self.request!r}")
     return {"status": "ok", "message": "Celery is running"}
 
+

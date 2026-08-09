@@ -35,3 +35,4 @@ export function EmptyState({ message = 'No data available', icon: Icon = Inbox }
   );
 }
 
+

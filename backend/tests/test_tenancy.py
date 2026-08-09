@@ -156,3 +156,4 @@ async def test_multi_user_multi_org(db_session):
     roles_by_org = {m.organization_id: m.role for m in memberships}
     assert roles_by_org[org_a.id] == OrganizationRole.ADMIN
     assert roles_by_org[org_b.id] == OrganizationRole.VIEWER
+

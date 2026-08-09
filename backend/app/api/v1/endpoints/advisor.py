@@ -82,3 +82,4 @@ async def advisor_snapshot(
     snapshot = await AdvisorService.build_snapshot(db, org)
     return snapshot
 
+
