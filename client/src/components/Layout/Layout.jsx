@@ -6,13 +6,14 @@ import { CalendarDays, Thermometer, PartyPopper, Megaphone, TrendingUp } from 'l
 
 function ContextChip({ icon: Icon, tone, children }) {
   const tones = {
-    default: 'bg-white border-slate-200 text-slate-600',
-    holiday: 'bg-amber-50 border-amber-200 text-amber-800',
-    pre: 'bg-orange-50 border-orange-200 text-orange-800',
-    demand: 'bg-violet-50 border-violet-200 text-violet-800',
+    default: 'bg-white border border-gray-200 text-[#18181B]',
+    holiday: 'bg-amber-50 border border-amber-200 text-amber-800',
+    pre: 'bg-white border border-gray-200 text-[#18181B]',
+    demand: 'bg-[#18181B] text-white',
+    ai: 'bg-indigo-50 border border-indigo-200 text-indigo-700',
   };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-medium shadow-sm ${tones[tone] || tones.default}`}>
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm ${tones[tone] || tones.default}`}>
       {Icon && <Icon className="w-4 h-4" />}
       {children}
     </span>
@@ -27,6 +28,13 @@ const PAGE_TITLES = {
   '/model-insights': { title: 'Model Insights', desc: 'Explainability & performance' },
   '/ai-insights': { title: 'AI Insights', desc: 'Automated business intelligence' },
   '/upload': { title: 'Upload Data', desc: 'Import & validate datasets' },
+  '/stores': { title: 'Stores', desc: 'Store intelligence & performance' },
+  '/products': { title: 'Products', desc: 'Product intelligence' },
+  '/advisor': { title: 'Advisor', desc: 'AI business advisor' },
+  '/what-if': { title: 'What-If Analysis', desc: 'Inventory simulation' },
+  '/alerts': { title: 'Alerts', desc: 'Smart alerts' },
+  '/data-health': { title: 'Data Health', desc: 'Data quality monitoring' },
+  '/reports': { title: 'Reports', desc: 'Generated reports' }
 };
 
 export default function Layout() {
@@ -35,29 +43,32 @@ export default function Layout() {
   const page = PAGE_TITLES[location.pathname] || PAGE_TITLES['/'];
 
   useEffect(() => {
-    weatherService.holidaysCurrent().then(r => setContext(r.data)).catch(() => {});
+    weatherService.holidaysCurrent().then(r => setContext(r.data)).catch(() => {})
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
+    <div className="flex min-h-screen bg-[#f4f4f1]">
       <Sidebar />
       <div className="flex-1 min-w-0 flex flex-col">
-        {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-slate-200">
-          <div className="px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-20 border-b border-stone-100 bg-[#f4f4f1]/90 backdrop-blur-md">
+          <div className="px-6 lg:px-10 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <div className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">Retail Intelligence</div>
-              <div className="text-sm font-semibold text-slate-800 truncate">{page.title}</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[.16em] text-stone-400">Retail Intelligence</div>
+              <div className="text-sm font-semibold text-stone-800 truncate" aria-label={page.title}>{page.title}</div>
             </div>
 
-            {/* Context chips */}
+            {/* Context chips with indigo accent for AI features */}
             {context && (
               <div className="hidden md:flex flex-wrap justify-end gap-2 text-sm">
                 {context.season && (
-                  <ContextChip icon={CalendarDays}>{context.season_emoji} {context.season}</ContextChip>
+                  <ContextChip icon={CalendarDays} tone="default">
+                    {context.season_emoji} {context.season}
+                  </ContextChip>
                 )}
                 {context.temperature_c && (
-                  <ContextChip icon={Thermometer}>{context.temperature_c}°C</ContextChip>
+                  <ContextChip icon={Thermometer} tone="default">
+                    {context.temperature_c}°C
+                  </ContextChip>
                 )}
                 {context.holiday_today && (
                   <ContextChip tone="holiday" icon={PartyPopper}>{context.holiday_today}</ContextChip>
@@ -70,6 +81,11 @@ export default function Layout() {
                 {context.demand_multiplier > 1 && (
                   <ContextChip tone="demand" icon={TrendingUp}>
                     {context.demand_multiplier}x demand
+                  </ContextChip>
+                )}
+                {context.ai_insight && (
+                  <ContextChip tone="ai" icon={TrendingUp}>
+                    AI Insight Available
                   </ContextChip>
                 )}
               </div>

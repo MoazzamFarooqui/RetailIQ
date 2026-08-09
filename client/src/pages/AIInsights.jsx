@@ -6,18 +6,18 @@ import { Sparkles, Brain, Lightbulb, TrendingDown, PartyPopper, Loader2, Calenda
 
 const severityStyles = {
   info: {
-    card: 'border-brand-100 bg-brand-50/50',
-    badge: 'bg-brand-100 text-brand-700',
+    card: 'border-brand-500/20 bg-brand-500/10',
+    badge: 'bg-brand-500/10 text-brand-400',
     icon: Brain,
   },
   warning: {
-    card: 'border-amber-200 bg-amber-50/60',
-    badge: 'bg-amber-100 text-amber-800',
+    card: 'border-amber-500/20 bg-amber-500/10',
+    badge: 'bg-amber-500/10 text-amber-400',
     icon: TrendingDown,
   },
   error: {
-    card: 'border-red-200 bg-red-50/60',
-    badge: 'bg-red-100 text-red-700',
+    card: 'border-red-500/20 bg-red-500/10',
+    badge: 'bg-red-500/10 text-red-400',
     icon: AlertCircleIcon,
   },
 };
@@ -88,46 +88,46 @@ export default function AIInsights() {
         <div className="content-section">
           <div className="content-section-title">Current Season Context</div>
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-600 to-emerald-700 text-white p-6">
-              <div className="absolute -bottom-10 -right-10 w-44 h-44 rounded-full bg-white/10 blur-2xl" />
-              <div className="text-4xl mb-3">{getSeasonEmoji(seasonContext.current_season)}</div>
-              <div className="font-bold text-lg">{seasonContext.current_season}</div>
-              <p className="text-brand-50/90 text-sm mt-2 leading-relaxed max-w-sm">{seasonContext.season_advice}</p>
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#18181B] to-[#27272A] text-white p-6">
+              <div className="absolute -bottom-10 -right-10 w-44 h-44 rounded-full bg-white/[0.05] blur-2xl" />
+              <div className="text-4xl mb-3 drop-shadow-[0_0_8px_rgba(255,255,255,0.25)]">{getSeasonEmoji(seasonContext.current_season)}</div>
+              <div className="font-bold text-lg text-white">{seasonContext.current_season}</div>
+              <p className="text-[#9CA3AF] text-sm mt-2 leading-relaxed max-w-sm">{seasonContext.season_advice}</p>
             </div>
 
             <div className="space-y-4">
               {seasonContext.high_demand_products?.length > 0 && (
                 <div>
-                  <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">High Demand</span>
+                  <span className="text-xs font-semibold text-[#18181B] uppercase tracking-wider">High Demand</span>
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {seasonContext.high_demand_products.slice(0, 10).map((p, i) => (
-                      <span key={i} className="badge-ok">{p}</span>
+                      <span key={i} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-[#18181B] text-white">{p}</span>
                     ))}
                   </div>
                 </div>
               )}
               {seasonContext.low_demand_products?.length > 0 && (
                 <div>
-                  <span className="text-xs font-semibold text-orange-600 uppercase tracking-wider">Low Demand</span>
+                  <span className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">Low Demand</span>
                   <div className="flex flex-wrap gap-1.5 mt-1.5">
                     {seasonContext.low_demand_products.slice(0, 10).map((p, i) => (
-                      <span key={i} className="badge-low">{p}</span>
+                      <span key={i} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold bg-[#F4F4F5] text-[#71717A]">{p}</span>
                     ))}
                   </div>
                 </div>
               )}
               {seasonContext.upcoming_holidays?.length > 0 && (
                 <div>
-                  <span className="text-xs font-semibold text-violet-600 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-xs font-semibold text-[#475569] uppercase tracking-wider flex items-center gap-1">
                     <PartyPopper className="w-3.5 h-3.5" />
                     Upcoming Holidays
                   </span>
                   <div className="space-y-1.5 mt-1.5">
                     {seasonContext.upcoming_holidays.map((h, i) => (
-                      <div key={i} className="text-sm flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
-                        <span className="font-medium text-slate-800">{h.name}</span>
-                        <span className="text-slate-400">{h.date?.substring(0, 10)}</span>
+                      <div key={i} className="text-sm flex items-center gap-2 justify-start text-left">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#475569]" />
+                        <span className="font-medium text-slate-900">{h.name}</span>
+                        <span className="text-slate-500">{h.date?.substring(0, 10)}</span>
                       </div>
                     ))}
                   </div>
@@ -141,7 +141,7 @@ export default function AIInsights() {
       {/* Insights List */}
       <div className="content-section">
         <div className="content-section-title">
-          <Lightbulb className="w-4 h-4 text-amber-500" />
+          <Lightbulb className="w-4 h-4 text-slate-900" />
           Generated Insights
         </div>
         {insights && insights.length > 0 ? (
@@ -157,13 +157,13 @@ export default function AIInsights() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500">{insight.category}</span>
-                        <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">{insight.category}</span>
+                        <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
                           <CalendarDays className="w-3 h-3" />
                           {new Date(insight.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <div className="text-sm text-slate-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.insight_text }} />
+                      <div className="text-sm text-slate-300 leading-relaxed" dangerouslySetInnerHTML={{ __html: insight.insight_text }} />
                     </div>
                   </div>
                 </div>
@@ -171,7 +171,7 @@ export default function AIInsights() {
             })}
           </div>
         ) : (
-          <p className="text-slate-400 text-sm">No insights generated yet. Click "Generate Insights" to start.</p>
+          <p className="text-slate-500 text-sm">No insights generated yet. Click "Generate Insights" to start.</p>
         )}
       </div>
     </div>

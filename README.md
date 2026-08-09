@@ -18,6 +18,8 @@ A comprehensive AI powered retail analytics platform with demand forecasting, in
 ![Prophet](https://img.shields.io/badge/Prophet-1.1-805AD5?style=for-the-badge)
 ![SHAP](https://img.shields.io/badge/SHAP-Explainable%20AI-3182CE?style=for-the-badge)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge\&logo=scikit-learn\&logoColor=white)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?style=for-the-badge\&logo=github-actions\&logoColor=white)
+![Plotly](https://img.shields.io/badge/Plotly.js-2.29-3F4F75?style=for-the-badge\&logo=plotly\&logoColor=white)
 
 ---
 
@@ -55,7 +57,7 @@ The platform is built as a modern two tier web application:
 
 | Tier               | Tech                                          | Role                                   |
 | ------------------ | --------------------------------------------- | -------------------------------------- |
-| **Frontend**       | React 18 + Vite + Tailwind CSS + Recharts     | Interactive SPA dashboard              |
+| **Frontend**       | React 18 + Vite + Tailwind CSS + Recharts + Plotly.js | Interactive SPA dashboard      |
 | **Backend**        | FastAPI + SQLAlchemy (async) + Celery + Redis | REST API, ML pipeline, background jobs |
 | **Database**       | MySQL 8.0                                     | Persistent relational storage          |
 | **Cache / Broker** | Redis 7                                       | Caching + Celery message broker        |
@@ -246,10 +248,68 @@ The platform is built as a modern two tier web application:
 * PDF report generation using fpdf2 for forecasts, inventory, and model insights
 * Combined summary reports with metrics and visualizations
 
+### Multi Tenant Organizations
+
+* Create and manage organizations, invite members, and assign roles
+* Switch between organizations with isolated data, forecasts, and models
+* Role based access control across owner, admin, and member roles
+* Organization scoped model artifacts stored per tenant under `models/<org_id>/`
+
+### Data Ingestion & Webhooks
+
+* Programmatic data uploads through the `/data` API, including bulk row inserts
+* Webhook endpoints to ingest sales data from external systems
+* Inventory and import status reporting
+
+### Model Registry
+
+* Model versioning with artifact lifecycle: promoted and degraded states
+* Per organization model training, evaluation, and accuracy tracking
+* Automatic evaluation of matured forecasts and daily auto retrain
+* Rollback to a previous model version
+
+### Purchase Engine & What-If
+
+* Purchase recommendation engine producing buy decisions and financial summaries
+* What if analysis to simulate inventory or demand scenarios before buying
+
+### Smart Alerts
+
+* Automated alert detection with severity levels
+* Mark as read, resolve, and manual re detection
+* Alert counts and filters
+
+### Executive Intelligence
+
+* Executive overview dashboard with store and product intelligence
+* Per store and per product deep dives
+
+### AI Business Advisor
+
+* Conversational AI assistant backed by Claude (Anthropic)
+* Ask business questions in plain language and get context aware answers
+* Rule based fallback answers when the API key is not configured
+
+### Data Health
+
+* Data Health Score from 0 to 100 with itemized deductions and improvement suggestions
+* Anomaly detection across your dataset
+
+### Commercial Reporting
+
+* Calculated reports for forecasts, inventory, models, purchases, and more
+* CSV and PDF exports for every report type
+
+### Operations Monitor
+
+* System health and info endpoints
+* Async job tracking with retry and task templates
+* Task discovery and templates
+
 ### Operational Infrastructure
 
 * **JWT authentication** with login, registration, refresh tokens, and role based access for admin and analyst users
-* **Celery worker + beat** for background training and scheduled daily insight generation
+* **Celery worker + beat** for background training, scheduled daily insight generation, model evaluation, auto retrain, and alert detection
 * **Redis caching** for weather and holiday lookups and frequent queries
 * **Container healthchecks** on every service
 
@@ -272,8 +332,10 @@ The platform is built as a modern two tier web application:
                                             ▼
                     ┌───────────────────────────────────────────────────┐
                     │            FastAPI Backend (uvicorn)              │
-                    │  /api/v1/auth · analytics · forecast · inventory  │
-                    │  /api/v1/model · insights · upload · weather      │
+                    │ /api/v1/auth · analytics · forecast · inventory  │
+                    │ /api/v1/model · insights · upload · weather      │
+                    │ /api/v1/organizations · model-registry · alerts  │
+                    │ /api/v1/purchase · advisor · data-health · ops   │
                     └───────┬──────────────────────┬────────────────────┘
                             │                      │
                     ┌───────▼────────┐    ┌────────▼─────────┐
@@ -297,6 +359,8 @@ The platform is built as a modern two tier web application:
 | `redis`         | `retailiq-redis`         | 6379 → 6379 | Cache + Celery broker           |
 | `celery-worker` | `retailiq-celery-worker` | —           | Async ML training               |
 | `celery-beat`   | `retailiq-celery-beat`   | —           | Scheduled tasks, daily insights |
+
+> **Production:** `docker-compose.prod.yml` runs the same stack with `ENVIRONMENT=production`, publishes nothing to the host (an external reverse proxy fronts HTTPS and routes `/api` and `/` to `client`), and adds a `backup` service that performs nightly `mysqldump` → gzip → rclone uploads to object storage.
 
 ---
 
@@ -385,6 +449,10 @@ OPENWEATHER_API_KEY=your_key_here
 # Holiday data
 HOLIDAY_API_KEY=your_key_here
 
+# Claude API (AI Business Advisor) — advisor falls back to rule-based
+# answers when unset
+ANTHROPIC_API_KEY=your_key_here
+
 # Celery
 CELERY_BROKER_URL=redis://redis:6379/1
 CELERY_RESULT_BACKEND=redis://redis:6379/1
@@ -397,9 +465,9 @@ CORS_ORIGINS=["http://localhost:3000","http://localhost:5173","http://localhost:
 
 ### Dataset
 
-RetailIQ ships with the **M5 Walmart retail dataset**, containing 30,490 products across 1,941 days in `data/raw/`. A subsample covering 3 stores and the full 2011 to 2016 range is pre processed into `data/processed/engineered_features.csv`, along with compact analytics aggregates.
+RetailIQ ships with the **M5 Walmart retail dataset**, covering 30,490 products across 1,941 days. Because the raw sales and price files are large (hundreds of MB), the repository only tracks `data/raw/calendar.csv`; the full `sales_train_evaluation.csv` and `sell_prices.csv` are excluded via `.gitignore`. A subsample covering 3 stores and the full 2011 to 2016 range is pre processed into `data/processed/engineered_features.csv`, along with compact analytics aggregates.
 
-You can upload your own retail sales CSV at any time through the Upload page.
+You can upload your own retail sales CSV at any time through the Upload page, or ingest programmatically through the `/data` API.
 
 ---
 
@@ -514,6 +582,39 @@ docker compose up -d
 * Data Health Score from 0 to 100 with itemized deductions and improvement suggestions
 * Export insights as text or CSV
 
+### Products & Stores
+
+* Browse the retail catalog with product level intelligence
+* Per product and per store performance deep dives
+* Executive overview across the organization
+
+### AI Business Advisor
+
+* Ask natural language business questions
+* Get context aware, conversational answers backed by Claude
+* Review the conversation history and a snapshot of your business state
+
+### Alerts
+
+* Automated alert detection with severity levels and counts
+* Mark alerts as read and resolve them
+* Manually trigger detection at any time
+
+### Reports
+
+* Run report templates and view the rendered output
+* Export any report as CSV or PDF
+
+### Data Health
+
+* A live data health score with itemized deductions
+* Detailed anomaly detection and improvement recommendations
+
+### What If
+
+* Simulate inventory and demand scenarios before making buy decisions
+* Compare financial outcomes of alternative plans alongside purchase recommendations
+
 ---
 
 # Project Structure
@@ -522,13 +623,16 @@ docker compose up -d
 RetailIQ/
 │
 ├── docker-compose.yml               # Full stack orchestration, 6 services
+├── docker-compose.prod.yml          # Production oriented Compose overlay
 ├── README.md                        # Project documentation
 ├── .env / .env.example              # Environment configuration
+├── .github/workflows/               # CI/CD: backend tests, lint, image push
 │
 ├── backend/                         # FastAPI backend, bind mounted into containers
 │   ├── Dockerfile                   # Multi stage Python 3.12 image
 │   ├── requirements.txt             # Python dependencies
 │   ├── alembic/                     # DB migration scaffolding
+│   ├── _scripts/ or scripts/        # Utility scripts (favicon render, data regen)
 │   ├── scripts/
 │   │   ├── regenerate_engineered_data.py
 │   │   │                              # Rebuild engineered features from raw M5
@@ -538,14 +642,19 @@ RetailIQ/
 │   └── app/
 │       ├── main.py                  # FastAPI app factory + lifespan
 │       ├── core/                    # Config, database, security, cache, dependencies
-│       ├── models/                  # SQLAlchemy ORM models, 7 tables
+│       ├── models/                  # SQLAlchemy ORM models, 20+ tables
 │       ├── schemas/                 # Pydantic request and response schemas
-│       ├── api/v1/endpoints/        # Auth, users, upload, forecast, inventory,
-│       │                            # analytics, model, insights, weather
-│       ├── services/                # Forecasting, inventory optimizer,
-│       │                            # feature engineering, explainability,
-│       │                            # insights engine, weather, holiday, report
-│       └── tasks/                   # Celery app, training, forecast, report tasks
+│       ├── api/v1/endpoints/        # Auth, users, organizations, data, upload,
+│       │                            # forecast, inventory, analytics, model,
+│       │                            # model-registry, purchase, alerts, insights,
+│       │                            # intelligence, advisor, data-health, reports,
+│       │                            # ops, weather
+│       ├── services/                # Forecasting, inventory optimizer, feature
+│       │                            # engineering, explainability, insights,
+│       │                            # weather, holiday, report, purchase engine,
+│       │                            # alert service, executive, advisor, data health
+│       └── tasks/                   # Celery app, training, forecast, report,
+│                                    # registry, alert tasks
 │
 ├── client/                          # React 18 SPA
 │   ├── Dockerfile                   # Multi stage Vite build + Nginx serve
@@ -557,14 +666,14 @@ RetailIQ/
 │       ├── contexts/AuthContext.jsx # JWT auth state
 │       ├── components/              # Layout, KpiCard, LoadingState, StatusBadge
 │       └── pages/                   # Dashboard, Analytics, Forecast, Inventory,
-│                                    # ModelInsights, AIInsights, Upload, Login
+│                                    # ModelInsights, AIInsights, Upload, Login,
+│                                    # Products, Stores, Advisor, Alerts, Reports,
+│                                    # WhatIf, DataHealth
 │
 ├── data/                            # Mounted into containers
-│   ├── raw/                         # Original M5 Walmart dataset
-│   │   ├── calendar.csv             # Date metadata, 1,969 rows
-│   │   ├── sales_train_evaluation.csv
-│   │   │                              # Sales, 30,490 products × 1,941 days
-│   │   └── sell_prices.csv          # Product pricing, 6.8M records
+│   ├── raw/                         # M5 calendar metadata, tracked
+│   │   └── calendar.csv             # Date metadata, 1,969 rows
+│   │                                # (large raw sales/prices files excluded)
 │   └── processed/                   # Auto generated
 │       ├── engineered_features.csv  # Long format feature frame
 │       ├── analytics_daily.csv      # Compact daily aggregates
@@ -646,15 +755,28 @@ python backend/scripts/regenerate_analytics_aggregates.py
 
 ### Database Schema, MySQL
 
-| Table                       | Purpose                                         |
-| --------------------------- | ----------------------------------------------- |
-| `users`                     | Users, roles, admin or analyst, password hashes |
-| `datasets`                  | Upload metadata                                 |
-| `forecast_headers`          | Forecast session metadata                       |
-| `forecasts`                 | Individual forecast records                     |
-| `inventory_recommendations` | Per item inventory calculations                 |
-| `model_history`             | Training runs and metrics                       |
-| `business_insights`         | Generated insight text and categories           |
+The schema is multi tenant and grows with the product. Core tables include:
+
+| Table                        | Purpose                                        |
+| ---------------------------- | ---------------------------------------------- |
+| `users`                      | Users, roles, admin or analyst, password hashes |
+| `organizations`              | Multi tenant organizations                      |
+| `organization_members`       | Membership and role links to organizations      |
+| `invitations`                | Pending organization invitations                |
+| `datasets`                   | Upload metadata                                 |
+| `products` / `stores`        | Retail catalog entities                         |
+| `sales`                      | Transactional sales records                     |
+| `inventory_levels`           | Current stock levels                            |
+| `import_jobs` / `webhook_sources` | Data ingestion and webhook sources              |
+| `forecast_headers`           | Forecast session metadata                       |
+| `forecasts`                  | Individual forecast records                     |
+| `inventory_recommendations`  | Per item inventory calculations                 |
+| `model_history`              | Training runs and metrics                       |
+| `model_registry`             | Versioned model artifacts and status            |
+| `forecast_accuracy`          | Accuracy tracking per forecast                   |
+| `alerts` / `notification_deliveries` | Smart alert records, severities, delivery     |
+| `advisor_conversations`      | AI Business Advisor chat history                |
+| `business_insights`          | Generated insight text and categories            |
 
 ---
 
@@ -666,13 +788,16 @@ Interactive documentation is available at `/docs` through Swagger UI.
 
 All endpoints except `/auth/register` and `/auth/login` require an `Authorization: Bearer <token>` header.
 
-### Authentication
+### Authentication & Users
 
-| Method | Endpoint                | Description                                  |
-| ------ | ----------------------- | -------------------------------------------- |
-| POST   | `/api/v1/auth/register` | Register a new user, role: analyst           |
-| POST   | `/api/v1/auth/login`    | Login, returns JWT access and refresh tokens |
-| POST   | `/api/v1/auth/refresh`  | Refresh an expired access token              |
+| Method | Endpoint                        | Description                                  |
+| ------ | ------------------------------- | -------------------------------------------- |
+| POST   | `/api/v1/auth/register`         | Register a new user, role: analyst           |
+| POST   | `/api/v1/auth/login`            | Login, returns JWT access and refresh tokens |
+| POST   | `/api/v1/auth/refresh`          | Refresh an expired access token              |
+| POST   | `/api/v1/auth/change-password`  | Change the current user's password           |
+| GET    | `/api/v1/users/me`              | Current user profile                         |
+| PUT    | `/api/v1/users/me`              | Update current user profile                  |
 
 ### Analytics
 
@@ -691,27 +816,109 @@ All endpoints except `/auth/register` and `/auth/login` require an `Authorizatio
 | ------ | --------------------------- | ---------------------------------------------- |
 | POST   | `/api/v1/forecast/generate` | Generate forecast for item, store, and horizon |
 | GET    | `/api/v1/forecast/history`  | Forecast history                               |
+| GET    | `/api/v1/forecast/{id}`     | Forecast detail                                |
 | POST   | `/api/v1/model/train`       | Train all models, sync or async through Celery |
 | GET    | `/api/v1/model/history`     | Model training history                         |
-| GET    | `/api/v1/model/compare`     | Model comparison metrics                       |
+| GET    | `/api/v1/model/best`        | The current best model                         |
 | GET    | `/api/v1/model/features`    | Feature importance                             |
 
 ### Inventory & Insights
 
-| Method | Endpoint                            | Description                |
-| ------ | ----------------------------------- | -------------------------- |
-| GET    | `/api/v1/inventory/recommendations` | Inventory recommendations  |
-| POST   | `/api/v1/inventory/optimize`        | Run inventory optimization |
-| GET    | `/api/v1/insights/recent`           | Recent generated insights  |
-| POST   | `/api/v1/insights/generate`         | Generate new insights      |
+| Method | Endpoint                             | Description                                      |
+| ------ | ------------------------------------ | ------------------------------------------------ |
+| POST   | `/api/v1/inventory/recommendations`  | Inventory recommendations                        |
+| GET    | `/api/v1/inventory/demand-multiplier`| Seasonal and holiday demand multipliers           |
+| GET    | `/api/v1/inventory/seasonal-advice`  | Seasonal product advice                           |
+| POST   | `/api/v1/insights/generate`         | Generate new insights                            |
+| GET    | `/api/v1/insights/list`            | List generated insights                          |
+| GET    | `/api/v1/insights/season-context`  | Current season, weather, and holiday context     |
 
 ### Upload & Weather
 
-| Method | Endpoint                   | Description                   |
-| ------ | -------------------------- | ----------------------------- |
-| POST   | `/api/v1/upload`           | Upload a sales CSV            |
-| GET    | `/api/v1/weather/current`  | Current weather with fallback |
-| GET    | `/api/v1/weather/forecast` | 5 day weather forecast        |
+| Method | Endpoint                       | Description                     |
+| ------ | ------------------------------ | ------------------------------- |
+| POST   | `/api/v1/upload/`              | Upload a sales CSV              |
+| GET    | `/api/v1/upload/history`       | Upload history                  |
+| GET    | `/api/v1/weather/current`      | Current weather with fallback   |
+| GET    | `/api/v1/weather/forecast`     | Weather forecast                |
+| GET    | `/api/v1/weather/holidays/upcoming` | Upcoming holidays         |
+| GET    | `/api/v1/weather/holidays/current`  | Current season holiday     |
+
+### Organizations
+
+| Method | Endpoint                                | Description                             |
+| ------ | --------------------------------------- | --------------------------------------- |
+| POST   | `/api/v1/organizations`                 | Create an organization                  |
+| GET    | `/api/v1/organizations/me`              | Current organization                    |
+| PATCH  | `/api/v1/organizations/me`              | Update current organization             |
+| POST   | `/api/v1/organizations/switch/{org_id}` | Switch to another organization          |
+| GET    | `/api/v1/organizations/members`         | List members                            |
+| POST   | `/api/v1/organizations/invitations`     | Invite a member                         |
+
+### Data Ingestion
+
+| Method | Path                        | Description                     |
+| ------ | --------------------------- | ------------------------------- |
+| POST   | `/api/v1/data/upload`       | Upload sales data               |
+| POST   | `/api/v1/data/bulk`         | Bulk insert rows                |
+| POST   | `/api/v1/data/webhooks`     | Register an ingestion webhook   |
+| GET    | `/api/v1/data/summary`      | Organizational data summary     |
+
+### Model Registry
+
+| Method | Path                                     | Description                            |
+| ------ | ---------------------------------------- | -------------------------------------- |
+| GET    | `/api/v1/model-registry/overview`       | Registry overview and current model    |
+| POST   | `/api/v1/model-registry/train`          | Train and register model artifacts     |
+| POST   | `/api/v1/model-registry/promote/{id}`   | Promote an artifact                    |
+| POST   | `/api/v1/model-registry/rollback`       | Roll back to a previous version        |
+| GET    | `/api/v1/model-registry/accuracy`       | Forecast accuracy tracking             |
+| POST   | `/api/v1/model-registry/evaluate`       | Evaluate matured forecasts             |
+
+### Purchase Engine
+
+| Method | Endpoint                            | Description                             |
+| ------ | ----------------------------------- | --------------------------------------- |
+| POST   | `/api/v1/purchase/decisions`        | Purchase recommendations                |
+| POST   | `/api/v1/purchase/financial-summary`| Financial summary of a plan             |
+| POST   | `/api/v1/purchase/what-if`          | What if scenario analysis               |
+
+### Alerts
+
+| Method | Endpoint                     | Description                    |
+| ------ | ---------------------------- | ------------------------------ |
+| GET    | `/api/v1/alerts`            | List alerts                    |
+| GET    | `/api/v1/alerts/counts`    | Alert counts by severity       |
+| POST   | `/api/v1/alerts/{id}/read` | Mark an alert read |
+| POST   | `/api/v1/alerts/{id}/resolve` | Resolve an alert            |
+| POST   | `/api/v1/alerts/detect`    | Run alert detection            |
+
+### Executive & Intelligence
+
+| Method | Endpoint                     | Description                          |
+| ------ | ---------------------------- | ------------------------------------ |
+| GET    | `/api/v1/intelligence/executive` | Executive overview             |
+| GET    | `/api/v1/intelligence/stores`    | Store intelligence              |
+| GET    | `/api/v1/intelligence/products`  | Product intelligence            |
+
+### AI Business Advisor
+
+| Method | Endpoint                     | Description                                 |
+| ------ | ---------------------------- | ------------------------------------------- |
+| POST   | `/api/v1/advisor/ask`        | Ask a business question, Claude powered      |
+| GET    | `/api/v1/advisor/history`    | Advisor conversation history                 |
+
+### Data Health & Reports & Ops
+
+| Method | Endpoint                        | Description                        |
+| ------ | ------------------------------- | ---------------------------------- |
+| GET    | `/api/v1/data-health/report`   | Data health score and deductions   |
+| GET    | `/api/v1/data-health/anomalies`| Detected anomalies                 |
+| GET    | `/api/v1/reports/{type}`       | Fetch a calculated report          |
+| GET    | `/api/v1/reports/{type}/export`| Export a report as CSV or PDF      |
+| GET    | `/api/v1/ops/system/health`    | System health                      |
+| GET    | `/api/v1/ops/jobs`             | List async jobs                    |
+| POST   | `/api/v1/ops/jobs/{id}/retry` | Retry a failed job                 |
 
 ### External API Integrations
 
@@ -744,12 +951,17 @@ Background jobs run on the `celery-worker` container, with the scheduler, `celer
 | -------------------------------------------------- | --------- | -------------------------------------- |
 | `app.tasks.training_tasks.train_all_models_task`   | On demand | Trains all 5 models and saves the best |
 | `app.tasks.forecast_tasks.*`                       | On demand | Forecast generation jobs               |
-| `app.tasks.training_tasks.generate_daily_insights` | **Daily** | Generates automated business insights  |
 | `app.tasks.report_tasks.*`                         | On demand | PDF and CSV report generation          |
+| `app.tasks.training_tasks.generate_daily_insights` | **Daily** | Generates automated business insights for all orgs |
+| `app.tasks.registry_tasks.evaluate_forecasts_task` | **Daily** | Evaluates matured forecasts in the model registry |
+| `app.tasks.registry_tasks.auto_retrain_task`       | **Daily** | Automatically retrains registered models          |
+| `app.tasks.alert_tasks.run_alert_detection_task`   | **Daily** | Runs automated alert detection                    |
 
 Broker and result backend: Redis, database 1.
 
 Task time limit: 1 hour.
+
+Timezone: `Asia/Karachi`, `worker_max_tasks_per_child: 10`.
 
 ---
 
@@ -814,6 +1026,7 @@ If port 3000, 8000, 3307, or 6379 is already taken, change the host side of the 
 * **Vite 5**, fast build tooling and development server
 * **Tailwind CSS**, utility first styling
 * **Recharts**, interactive charts including line, bar, pie, and KPI cards
+* **Plotly.js + react-plotly.js**, scientific and configurable charting
 * **Lucide React**, icon library
 
 ### Backend & API
@@ -821,7 +1034,7 @@ If port 3000, 8000, 3307, or 6379 is already taken, change the host side of the 
 * **FastAPI**, high performance async Python API
 * **Uvicorn**, ASGI server
 * **Pydantic v2**, validation and serialization
-* **SQLAlchemy 2 async**, ORM with `aiomysql` driver
+* **SQLAlchemy 2 async**, ORM with `aiomysql` / `asyncmy` drivers
 * **Alembic**, migration tooling
 
 ### Machine Learning
@@ -851,6 +1064,7 @@ If port 3000, 8000, 3307, or 6379 is already taken, change the host side of the 
 
 * **OpenWeatherMap**, live weather data and forecasts
 * **Calendarific**, national and religious holiday data
+* **Anthropic Claude**, powers the conversational AI Business Advisor
 
 ### Reporting
 
@@ -894,12 +1108,13 @@ git push origin feature/amazing-feature
 
 * Add additional forecasting models such as ARIMA, LSTM, and Transformer
 * Implement multi warehouse inventory support
-* Add multi tenant support beyond role based authentication
+* Deepen multi tenant support with per tenant model and data isolation
 * Integrate with real POS systems through an API
-* Add email and SMS alerting for stockout predictions
+* Add email, SMS, and push delivery for alert notifications
 * Add PostgreSQL as an alternative database backend
 * Add comparative analysis across multiple stores and chains
 * Implement A/B testing for promotional effectiveness
+* Add CI/CD for the frontend bundle and end to end tests
 
 ---
 

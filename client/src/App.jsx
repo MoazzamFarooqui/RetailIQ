@@ -9,6 +9,13 @@ import Inventory from './pages/Inventory';
 import ModelInsights from './pages/ModelInsights';
 import AIInsights from './pages/AIInsights';
 import Upload from './pages/Upload';
+import Stores from './pages/Stores';
+import Products from './pages/Products';
+import Advisor from './pages/Advisor';
+import Alerts from './pages/Alerts';
+import Reports from './pages/Reports';
+import WhatIf from './pages/WhatIf';
+import DataHealth from './pages/DataHealth';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -31,6 +38,13 @@ function App() {
         <Route path="model-insights" element={<ModelInsights />} />
         <Route path="ai-insights" element={<AIInsights />} />
         <Route path="upload" element={<Upload />} />
+        <Route path="stores" element={<Stores />} />
+        <Route path="products" element={<Products />} />
+        <Route path="advisor" element={<Advisor />} />
+        <Route path="alerts" element={<Alerts />} />
+        <Route path="reports" element={<Reports />} />
+        <Route path="what-if" element={<WhatIf />} />
+        <Route path="data-health" element={<DataHealth />} />
       </Route>
     </Routes>
   );

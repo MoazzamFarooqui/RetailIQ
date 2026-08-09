@@ -1,0 +1,56 @@
+name: Deploy to Production VPS
+
+# Triggered manually or on push to main (only when the push changes backend,
+# client, or deploy config files). Requires these repo secrets:
+#   VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_PORT (optional, default 22)
+#   VPS_DIR  (optional, default /opt/retailiq)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'client/**'
+      - 'docker-compose*.yml'
+      - '.github/workflows/deploy.yml'
+      - 'backup/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS via rsync + docker compose
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER: ${{ secrets.VPS_USER }}
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          PORT: ${{ secrets.VPS_PORT }}
+          DIR: ${{ secrets.VPS_DIR }}
+        run: |
+          set -euo pipefail
+          PORT_VAL="${PORT:-22}"
+          DIR_VAL="${DIR:-/opt/retailiq}"
+
+          echo "$SSH_KEY" > /tmp/id_rsa
+          chmod 600 /tmp/id_rsa
+          SSH_OPTS="-i /tmp/id_rsa -p ${PORT_VAL} -o StrictHostKeyChecking=no"
+
+          # Ensure target dir exists
+          ssh $SSH_OPTS "${USER}@${HOST}" "mkdir -p ${DIR_VAL}"
+
+          # Sync code (exclude secrets, artifacts, and VCS)
+          rsync -avz --delete \
+            -e "ssh -i /tmp/id_rsa -p ${PORT_VAL} -o StrictHostKeyChecking=no" \
+            --exclude '.git' --exclude 'node_modules' --exclude '.env' \
+            --exclude 'data/processed' --exclude 'models' --exclude 'backup/local' \
+            --exclude 'backup/rclone.conf' \
+            ./ "${USER}@${HOST}:${DIR_VAL}/"
+
+          # Rebuild and restart the production stack
+          ssh $SSH_OPTS "${USER}@${HOST}" \
+            "cd ${DIR_VAL} && docker compose -f docker-compose.prod.yml up -d --build"

@@ -1,19 +1,17 @@
-"""Inventory optimization endpoints."""
+"""Inventory optimization endpoints (org-scoped, MySQL-backed)."""
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-import pandas as pd
-import numpy as np
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, get_current_org
 from app.schemas.inventory import (
-    InventoryRequest, InventoryRecommendationItem, InventoryStatusResponse,
-    StockoutPrediction, OverstockItem,
+    InventoryRequest, InventoryRecommendationItem, StockoutPrediction, OverstockItem,
 )
 from app.models.user import User
+from app.models.organization import Organization
 from app.services.inventory_optimizer import InventoryOptimizer
-from app.services.weather_service import WeatherService
+from app.services.data_service import TenantDataService
 
 router = APIRouter()
 
@@ -22,16 +20,25 @@ router = APIRouter()
 async def generate_recommendations(
     request: InventoryRequest,
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Generate inventory optimization recommendations."""
-    # Load data
-    try:
-        data_path = "data/processed/engineered_features.csv"
-        df = pd.read_csv(data_path)
-        df["date"] = pd.to_datetime(df["date"])
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Processed data not found. Upload and process data first.")
+    """Generate inventory optimization recommendations for the active org."""
+    # Load the org's sales data from MySQL
+    df = await TenantDataService.load_sales_df(db, org.id)
+    if df.empty:
+        raise HTTPException(status_code=404, detail="No data for this organization. Upload or ingest data first.")
+
+    # Real stock levels when available; otherwise estimate (existing heuristic)
+    inv_df = await TenantDataService.load_inventory_df(db, org.id)
+    if not inv_df.empty:
+        df = df.merge(inv_df, on=["item_id", "store_id"], how="left")
+    if "current_stock" not in df.columns or df["current_stock"].isna().all():
+        stock = df.groupby(["item_id", "store_id"])["sales"].transform(lambda x: max(x.tail(28).sum() * 1.5, 10))
+        df = df.copy()
+        df["current_stock"] = stock
+    else:
+        df["current_stock"] = df["current_stock"].fillna(0)
 
     # Get demand multiplier
     demand_mult = request.demand_multiplier or InventoryOptimizer.get_current_demand_multiplier()["multiplier"]
@@ -41,12 +48,6 @@ async def generate_recommendations(
     if len(combos) > request.sample_size:
         sampled = combos.sample(n=request.sample_size, random_state=42)
         df = df.merge(sampled, on=["item_id", "store_id"])
-
-    # Estimate current stock if not present
-    if "current_stock" not in df.columns:
-        stock = df.groupby(["item_id", "store_id"])["sales"].transform(lambda x: max(x.tail(28).sum() * 1.5, 10))
-        df = df.copy()
-        df["current_stock"] = stock
 
     # Run optimizer
     optimizer = InventoryOptimizer(service_level=request.service_level)
@@ -129,12 +130,10 @@ async def generate_recommendations(
 @router.get("/demand-multiplier")
 async def get_demand_multiplier():
     """Get the current demand multiplier based on season, weather, and holidays."""
-    multiplier = InventoryOptimizer.get_current_demand_multiplier()
-    return multiplier
+    return InventoryOptimizer.get_current_demand_multiplier()
 
 
 @router.get("/seasonal-advice")
 async def get_seasonal_advice():
     """Get seasonal product advice and holiday stock recommendations."""
-    advice = InventoryOptimizer.get_holiday_stock_advice()
-    return {"advice": advice}
+    return {"advice": InventoryOptimizer.get_holiday_stock_advice()}

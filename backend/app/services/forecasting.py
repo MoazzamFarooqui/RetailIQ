@@ -206,13 +206,18 @@ class DemandForecaster:
 
     @staticmethod
     def _calculate_metrics(y_true, y_pred):
-        """Calculate common regression metrics."""
+        """Calculate common regression metrics (MAE, RMSE, R2, MAPE, WAPE, bias)."""
+        y_true = np.asarray(y_true, dtype=float)
+        y_pred = np.asarray(y_pred, dtype=float)
         mae = mean_absolute_error(y_true, y_pred)
         rmse = np.sqrt(mean_squared_error(y_true, y_pred))
         r2 = r2_score(y_true, y_pred)
         mask = y_true != 0
-        mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
-        return {"MAE": mae, "RMSE": rmse, "R2": r2, "MAPE": mape}
+        mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100 if mask.sum() > 0 else float("nan")
+        denom = np.sum(np.abs(y_true))
+        wape = float(np.sum(np.abs(y_true - y_pred)) / denom * 100) if denom > 0 else float("nan")
+        bias_val = float(np.mean(y_pred - y_true)) if len(y_true) > 0 else float("nan")
+        return {"MAE": mae, "RMSE": rmse, "R2": r2, "MAPE": mape, "WAPE": wape, "bias": bias_val}
 
     # ── Predict ──────────────────────────────────────────────────────────────
 

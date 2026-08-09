@@ -52,17 +52,16 @@ async def get_db() -> AsyncSession:
 async def init_db():
     """Create all tables (for development) and seed default admin user."""
     async with engine.begin() as conn:
-        from app.models.user import User  # noqa
-        from app.models.dataset import Dataset  # noqa
-        from app.models.forecast import Forecast, ForecastHeader  # noqa
-        from app.models.inventory import InventoryRecommendation  # noqa
-        from app.models.model_history import ModelHistory  # noqa
-        from app.models.insight import BusinessInsight  # noqa
+        from app.models import (  # noqa: F401  — imports register all models
+            User, Organization, OrganizationMember, Invitation, Dataset,
+            Product, Store, Sale, Forecast, ForecastHeader,
+            InventoryRecommendation, ModelHistory, BusinessInsight,
+        )
         await conn.run_sync(Base.metadata.create_all)
 
     async with async_session_factory() as session:
         from sqlalchemy import select
-        from app.models.user import User, UserRole
+        from app.models import User, UserRole, Organization, OrgStatus, OrganizationMember, OrganizationRole
         from app.core.security import hash_password
         result = await session.execute(select(User).where(User.username == "admin"))
         if not result.scalar_one_or_none():
@@ -73,6 +72,23 @@ async def init_db():
                 role=UserRole.ADMIN,
             )
             session.add(admin)
+            await session.commit()
+            # Seed a default organization and make admin its owner, so the
+            # v3 UI has an org to work with on first boot.
+            org = Organization(
+                name="RetailIQ Demo Org",
+                slug="retailiq-demo",
+                owner_id=admin.id,
+                status=OrgStatus.ACTIVE,
+            )
+            session.add(org)
+            await session.flush()
+            session.add(OrganizationMember(
+                organization_id=org.id,
+                user_id=admin.id,
+                role=OrganizationRole.OWNER,
+            ))
+            admin.organization_id = org.id
             await session.commit()
 
 

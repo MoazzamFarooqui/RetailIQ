@@ -13,6 +13,7 @@ class BusinessInsight(Base):
     __tablename__ = "business_insights"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    organization_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     dataset_id: Mapped[str] = mapped_column(String(36), ForeignKey("datasets.id"), nullable=True)
     insight_type: Mapped[str] = mapped_column(String(100), nullable=False)
     insight_text: Mapped[str] = mapped_column(Text, nullable=False)

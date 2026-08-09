@@ -1,20 +1,21 @@
-"""Model training and management endpoints."""
+"""Model training and management endpoints (org-scoped, MySQL-backed)."""
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
-import pandas as pd
 import os
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user, require_roles
+from app.core.dependencies import get_current_user, get_current_org, require_org_roles, get_membership
 from app.schemas.model import (
-    TrainRequest, ModelMetrics, ModelHistoryRecord, ModelComparisonResponse,
-    FeatureImportance, TrainResponse,
+    TrainRequest, ModelMetrics, ModelHistoryRecord, TrainResponse,
+    FeatureImportance,
 )
 from app.models.user import User
+from app.models.organization import Organization
 from app.models.model_history import ModelHistory
 from app.services.forecasting import DemandForecaster
+from app.services.data_service import TenantDataService
 
 router = APIRouter()
 
@@ -23,31 +24,20 @@ router = APIRouter()
 async def train_models(
     request: TrainRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_roles(["admin", "analyst"])),
+    org: Organization = Depends(get_current_org),
+    current_user: User = Depends(require_org_roles(["owner", "admin", "manager", "analyst"])),
 ):
-    """Train all forecasting models and select the best one."""
-    # Load data
-    data_paths = [
-        "data/processed/engineered_features.csv",
-        "data/processed/uploaded_data.csv",
-        "data/processed/final_dataset.csv",
-    ]
-    df = None
-    for p in data_paths:
-        if os.path.exists(p):
-            df = pd.read_csv(p)
-            df["date"] = pd.to_datetime(df["date"])
-            break
-
-    if df is None:
-        raise HTTPException(status_code=404, detail="No training data found. Upload data first.")
-
-    # Feature engineering if needed
-    if request.sample_size < len(df):
-        df = df.sample(n=request.sample_size, random_state=42)
+    """Train all forecasting models on the org's data and select the best one."""
+    # Load the org's data from MySQL
+    df = await TenantDataService.load_sales_df(db, org.id)
+    if df.empty:
+        raise HTTPException(status_code=404, detail="No data for this organization. Upload or ingest data first.")
 
     if "sales" not in df.columns:
         raise HTTPException(status_code=400, detail="Training data must contain a 'sales' column")
+
+    if request.sample_size < len(df):
+        df = df.sample(n=request.sample_size, random_state=42)
 
     # Train all models
     try:
@@ -60,18 +50,20 @@ async def train_models(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Training failed: {str(e)}")
 
-    # Save best model
+    # Save best model to a per-org path
     best_forecaster = DemandForecaster(model_type=best_model)
     best_forecaster.train_model(df, target_col="sales")
-    model_path = "models/best_model.joblib"
-    os.makedirs("models", exist_ok=True)
+    org_model_dir = os.path.join("models", org.id)
+    os.makedirs(org_model_dir, exist_ok=True)
+    model_path = os.path.join(org_model_dir, "best_model.joblib")
     best_forecaster.save_model(model_path)
 
-    # Save metrics to DB
+    # Save metrics to DB (org-scoped)
     models_saved = []
     for _, row in comparison_df.iterrows():
         is_best = row["model"] == best_model
         metrics = ModelHistory(
+            organization_id=org.id,
             model_type=row["model"],
             mae=row.get("MAE"), rmse=row.get("RMSE"),
             mape=row.get("MAPE"), r2=row.get("R2"),
@@ -103,24 +95,34 @@ async def train_models(
 @router.get("/history", response_model=list[ModelHistoryRecord])
 async def get_model_history(
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Get model training history."""
+    """Get model training history for the active org."""
     result = await db.execute(
-        select(ModelHistory).order_by(desc(ModelHistory.trained_at)).limit(50)
+        select(ModelHistory)
+        .where(ModelHistory.organization_id == org.id)
+        .order_by(desc(ModelHistory.trained_at))
+        .limit(50)
     )
     return result.scalars().all()
 
 
 @router.get("/best")
-async def get_best_model(db: AsyncSession = Depends(get_db)):
-    """Get the best performing model."""
+async def get_best_model(
+    db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
+):
+    """Get the org's best performing model."""
     result = await db.execute(
-        select(ModelHistory).where(ModelHistory.is_best == True).order_by(desc(ModelHistory.trained_at)).limit(1)
+        select(ModelHistory)
+        .where(ModelHistory.organization_id == org.id, ModelHistory.is_best == True)  # noqa: E712
+        .order_by(desc(ModelHistory.trained_at))
+        .limit(1)
     )
     model = result.scalar_one_or_none()
     if not model:
-        raise HTTPException(status_code=404, detail="No trained model found")
+        raise HTTPException(status_code=404, detail="No trained model found for this organization")
     return ModelMetrics(
         model_type=model.model_type, mae=model.mae, rmse=model.rmse,
         mape=model.mape, r2=model.r2,
@@ -129,11 +131,15 @@ async def get_best_model(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/features", response_model=list[FeatureImportance])
-async def get_feature_importance(current_user: User = Depends(get_current_user)):
-    """Get feature importance from the current best model."""
-    model_path = "models/best_model.joblib"
+async def get_feature_importance(
+    db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
+    current_user: User = Depends(get_current_user),
+):
+    """Get feature importance from the org's current best model."""
+    model_path = os.path.join("models", org.id, "best_model.joblib")
     if not os.path.exists(model_path):
-        raise HTTPException(status_code=404, detail="No trained model found")
+        raise HTTPException(status_code=404, detail="No trained model found for this organization")
 
     try:
         forecaster = DemandForecaster()

@@ -6,14 +6,17 @@ import { formatNumber } from '../utils/helpers';
 import { Package, AlertTriangle, TrendingUp, ShoppingCart, Rocket, AlertCircle, Boxes } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
 
-const STATUS_COLORS = { OK: '#16A34A', LOW: '#D97706', CRITICAL: '#DC2626', EXCESS: '#0EA5E9' };
+const CRITICAL_RED = '#EF4444';
+const STATUS_COLORS = { OK: '#18181B', LOW: '#71717A', CRITICAL: CRITICAL_RED, EXCESS: '#0EA5E9' };
 
 const tooltipStyle = {
   contentStyle: {
     borderRadius: '10px',
-    border: '1px solid #e2e8f0',
-    boxShadow: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+    border: '1px solid #1f2937',
+    background: '#0e1219',
+    color: '#f8fafc',
     fontSize: '12px',
+    boxShadow: '0 8px 24px -8px rgb(0 0 0 / 0.6)',
   },
 };
 
@@ -21,7 +24,7 @@ function ChartCard({ title, subtitle, children }) {
   return (
     <div className="content-section">
       <div className="content-section-title">{title}</div>
-      {subtitle && <div className="text-xs text-slate-400 -mt-3 mb-4">{subtitle}</div>}
+      {subtitle && <div className="text-xs text-slate-500 -mt-3 mb-4">{subtitle}</div>}
       {children}
     </div>
   );
@@ -136,11 +139,34 @@ export default function Inventory() {
             <ChartCard title="Status Distribution" subtitle="Share of items by inventory health">
               <ResponsiveContainer width="100%" height={260}>
                 <PieChart>
-                  <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={88} paddingAngle={3} label={({ name, percent }) => `${name} ${(percent*100).toFixed(0)}%`} labelLine={false}>
+                  <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={88} paddingAngle={3} labelLine={false} label={({ name, percent, x, y, textAnchor }) => (
+                  <text x={x} y={y} textAnchor={textAnchor} fill={name === 'CRITICAL' ? CRITICAL_RED : '#374151'} fontSize={11} fontWeight={600}>
+                    {`${name} ${(percent * 100).toFixed(0)}%`}
+                  </text>
+                )}>
                     {statusData.map((d, i) => <Cell key={i} fill={STATUS_COLORS[d.name] || '#999'} />)}
                   </Pie>
                   <Tooltip {...tooltipStyle} />
-                  <Legend iconType="circle" iconSize={9} wrapperStyle={{ fontSize: 12 }} />
+                  <Legend content={({ payload }) => (
+                    <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 list-none mt-2">
+                      {payload?.map((entry, index) => (
+                        <li key={`legend-${index}`} className="flex items-center gap-1.5">
+                          <span
+                            style={{
+                              width: 9,
+                              height: 9,
+                              borderRadius: '50%',
+                              backgroundColor: entry.color,
+                              display: 'inline-block',
+                            }}
+                          />
+                          <span style={{ fontSize: 12, color: entry.name === 'CRITICAL' ? CRITICAL_RED : '#374151' }}>
+                            {entry.name}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  )} />
                 </PieChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -149,9 +175,9 @@ export default function Inventory() {
             <ChartCard title="Count by Status" subtitle="Number of items in each health category">
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={statusData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={{ stroke: '#e2e8f0' }} />
-                  <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={{ stroke: '#1f2937' }} />
+                  <YAxis tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={false} />
                   <Tooltip {...tooltipStyle} />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]} name="Items">
                     {statusData.map((d, i) => <Cell key={i} fill={STATUS_COLORS[d.name] || '#999'} />)}
@@ -165,7 +191,7 @@ export default function Inventory() {
           {result.stockout_predictions?.length > 0 && (
             <div className="content-section">
               <div className="content-section-title">
-                <AlertCircle className="w-4 h-4 text-red-500" />
+                <AlertCircle className="w-4 h-4 text-[#18181B]" />
                 Stockout Predictions
               </div>
               <div className="scroll-thin max-h-72">
@@ -184,7 +210,7 @@ export default function Inventory() {
                     <tbody>
                       {result.stockout_predictions.map((s, i) => (
                         <tr key={i}>
-                          <td className="font-medium text-slate-800">{s.item_id}</td>
+                          <td className="font-medium text-white">{s.item_id}</td>
                           <td>{s.store_id}</td>
                           <td className="num">{formatNumber(s.current_stock)}</td>
                           <td className="num font-bold">{s.days_remaining.toFixed(0)}</td>
@@ -210,7 +236,7 @@ export default function Inventory() {
                 <Boxes className="w-4 h-4 text-sky-500" />
                 Overstock Detection
               </div>
-              <p className="text-sm text-slate-500 mb-3">{result.overstock_items.length} items with excess inventory</p>
+              <p className="text-sm text-slate-400 mb-3">{result.overstock_items.length} items with excess inventory</p>
               <div className="scroll-thin max-h-72">
                 <div className="table-wrap">
                   <table className="data-table">
@@ -225,10 +251,10 @@ export default function Inventory() {
                     <tbody>
                       {result.overstock_items.map((o, i) => (
                         <tr key={i}>
-                          <td className="font-medium text-slate-800">{o.item_id}</td>
+                          <td className="font-medium text-white">{o.item_id}</td>
                           <td className="num">{formatNumber(o.current_stock)}</td>
                           <td className="num">{o.days_of_stock.toFixed(0)}</td>
-                          <td className="num font-medium text-orange-600">{formatNumber(o.excess_units)}</td>
+                          <td className="num font-medium text-orange-400">{formatNumber(o.excess_units)}</td>
                         </tr>
                       ))}
                     </tbody>

@@ -9,9 +9,11 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 const tooltipStyle = {
   contentStyle: {
     borderRadius: '10px',
-    border: '1px solid #e2e8f0',
-    boxShadow: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+    border: '1px solid #1f2937',
+    background: '#0e1219',
+    color: '#f8fafc',
     fontSize: '12px',
+    boxShadow: '0 8px 24px -8px rgb(0 0 0 / 0.6)',
   },
 };
 
@@ -66,19 +68,19 @@ export default function ModelInsights() {
       {/* Feature Importance */}
       <div className="content-section">
         <div className="content-section-title">Feature Importance</div>
-        <p className="text-xs text-slate-400 -mt-3 mb-4">Top features driving forecast predictions</p>
+        <p className="text-xs text-slate-500 -mt-3 mb-4">Top features driving forecast predictions</p>
         {features && features.length > 0 ? (
           <ResponsiveContainer width="100%" height={420}>
             <BarChart data={features.slice(0, 15)} layout="vertical" margin={{ left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} />
-              <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 11, fill: '#475569' }} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
+              <YAxis dataKey="feature" type="category" width={150} tick={{ fontSize: 11, fill: '#94a3b8' }} tickLine={false} axisLine={false} />
               <Tooltip {...tooltipStyle} />
-              <Bar dataKey="importance" fill="#2563EB" radius={[0, 6, 6, 0]} name="Importance" />
+              <Bar dataKey="importance" fill="#4a6cf7" radius={[0, 6, 6, 0]} name="Importance" />
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <p className="text-slate-400 text-sm">No feature importance data available. Train a model first.</p>
+          <p className="text-slate-500 text-sm">No feature importance data available. Train a model first.</p>
         )}
       </div>
 
@@ -103,7 +105,7 @@ export default function ModelInsights() {
                 <tbody>
                   {history.map((m, i) => (
                     <tr key={i}>
-                      <td className="font-medium text-slate-800">{m.model_type.replace('_', ' ')}</td>
+                      <td className="font-medium text-white">{m.model_type.replace('_', ' ')}</td>
                       <td className="num">{m.mae?.toFixed(2) || '—'}</td>
                       <td className="num">{m.rmse?.toFixed(2) || '—'}</td>
                       <td className="num">{m.mape ? `${m.mape.toFixed(2)}%` : '—'}</td>
@@ -111,7 +113,7 @@ export default function ModelInsights() {
                       <td className="num">{m.feature_count || '—'}</td>
                       <td className="text-center">
                         {m.is_best
-                          ? <span className="inline-flex items-center gap-1 text-emerald-600 font-semibold text-xs"><CheckCircle2 className="w-4 h-4" />Best</span>
+                          ? <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold text-xs"><CheckCircle2 className="w-4 h-4" />Best</span>
                           : <span className="text-slate-300">—</span>}
                       </td>
                     </tr>
@@ -121,7 +123,7 @@ export default function ModelInsights() {
             </div>
           </div>
         ) : (
-          <p className="text-slate-400 text-sm">No training history available.</p>
+          <p className="text-slate-500 text-sm">No training history available.</p>
         )}
       </div>
     </div>

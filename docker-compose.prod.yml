@@ -1,0 +1,180 @@
+# RetailIQ production compose — runs behind a reverse proxy with HTTPS.
+#
+# Usage on the VPS:
+#   cp .env.production .env
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Expectations:
+#   - A reverse proxy (Caddy/Nginx) fronts :443 and routes /api and / to client:80.
+#   - The `client` image is a static SPA; the proxy handles TLS.
+#   - Backups run nightly and upload to your object storage via rclone.
+#   - Prometheus scraping is exposed on api:8000/metrics (optionally Grafana).
+
+services:
+  # ── FastAPI Backend ──────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: retailiq-backend:latest
+    container_name: retailiq-api
+    expose:
+      - "8000"          # not published to the host — only via the proxy
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=mysql+aiomysql://retailiq:${MYSQL_PASSWORD}@db:3306/retailiq
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ── MySQL Database ───────────────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: retailiq-db
+    command: --default-authentication-plugin=caching_sha2_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=retailiq
+      - MYSQL_USER=retailiq
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── Redis (Cache + Celery Broker) ────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: retailiq-redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── Celery Worker ────────────────────────────────────────────────────────────
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: retailiq-backend:latest
+    container_name: retailiq-celery-worker
+    command: celery -A app.tasks.celery_app worker -l info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=mysql+aiomysql://retailiq:${MYSQL_PASSWORD}@db:3306/retailiq
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    depends_on:
+      - redis
+      - db
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── Celery Beat (Scheduled Tasks) ────────────────────────────────────────────
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: retailiq-backend:latest
+    container_name: retailiq-celery-beat
+    command: celery -A app.tasks.celery_app beat -l info
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=mysql+aiomysql://retailiq:${MYSQL_PASSWORD}@db:3306/retailiq
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+      - db
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── React Frontend (static SPA, served by the proxy) ─────────────────────────
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: retailiq-client:latest
+    container_name: retailiq-client
+    expose:
+      - "80"
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+  # ── Automated Database Backups ───────────────────────────────────────────────
+  # Nightly mysqldump → gzip → rclone upload to your object storage (S3/B2/GCS).
+  # Requires an rclone config at ./backup/rclone.conf and BACKUP_REMOTE in .env.
+  backup:
+    build:
+      context: ./backup
+      dockerfile: Dockerfile
+    image: retailiq-backup:latest
+    container_name: retailiq-backup
+    environment:
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - BACKUP_REMOTE=${BACKUP_REMOTE:-}
+    volumes:
+      - ./backup:/backup
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - retailiq-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  retailiq-network:
+    driver: bridge

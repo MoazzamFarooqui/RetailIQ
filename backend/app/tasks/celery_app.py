@@ -7,7 +7,13 @@ celery_app = Celery(
     "retailiq",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
-    include=["app.tasks.forecast_tasks", "app.tasks.training_tasks", "app.tasks.report_tasks"],
+    include=[
+        "app.tasks.forecast_tasks",
+        "app.tasks.training_tasks",
+        "app.tasks.report_tasks",
+        "app.tasks.registry_tasks",
+        "app.tasks.alert_tasks",
+    ],
 )
 
 celery_app.conf.update(
@@ -22,6 +28,18 @@ celery_app.conf.update(
     beat_schedule={
         "generate-daily-insights": {
             "task": "app.tasks.training_tasks.generate_daily_insights",
+            "schedule": 86400.0,  # daily
+        },
+        "evaluate-matured-forecasts": {
+            "task": "app.tasks.registry_tasks.evaluate_forecasts_task",
+            "schedule": 86400.0,  # daily
+        },
+        "auto-retrain-models": {
+            "task": "app.tasks.registry_tasks.auto_retrain_task",
+            "schedule": 86400.0,  # daily
+        },
+        "run-alert-detection": {
+            "task": "app.tasks.alert_tasks.run_alert_detection_task",
             "schedule": 86400.0,  # daily
         },
     },

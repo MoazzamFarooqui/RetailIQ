@@ -1,16 +1,17 @@
-"""AI Business insights endpoints."""
+"""AI Business insights endpoints (org-scoped)."""
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, desc
-import pandas as pd
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, get_current_org
 from app.schemas.insight import InsightItem, SeasonAdvice
 from app.models.user import User
+from app.models.organization import Organization
 from app.models.insight import BusinessInsight
 from app.services.insights_engine import InsightsEngine
+from app.services.data_service import TenantDataService
 from app.services.weather_service import WeatherService
 from app.services.holiday_service import HolidayService
 
@@ -20,24 +21,23 @@ router = APIRouter()
 @router.post("/generate", response_model=list[InsightItem])
 async def generate_insights(
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Generate AI-driven business insights from sales data."""
-    # Load data
-    try:
-        df = pd.read_csv("data/processed/engineered_features.csv")
-        df["date"] = pd.to_datetime(df["date"])
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Processed data not found")
+    """Generate AI-driven business insights from the org's sales data."""
+    df = await TenantDataService.load_sales_df(db, org.id)
+    if df.empty:
+        raise HTTPException(status_code=404, detail="No data for this organization. Upload or ingest data first.")
 
     # Run insights engine
     engine = InsightsEngine()
     insights = engine.analyze(df)
 
-    # Save to DB
+    # Save to DB (org-scoped)
     saved = []
     for insight in insights:
         record = BusinessInsight(
+            organization_id=org.id,
             insight_type=insight["insight_type"],
             insight_text=insight["insight_text"],
             category=insight["category"],
@@ -55,11 +55,15 @@ async def generate_insights(
 async def list_insights(
     limit: int = 50,
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Get previously generated insights."""
+    """Get previously generated insights for the active org."""
     result = await db.execute(
-        select(BusinessInsight).order_by(desc(BusinessInsight.created_at)).limit(limit)
+        select(BusinessInsight)
+        .where(BusinessInsight.organization_id == org.id)
+        .order_by(desc(BusinessInsight.created_at))
+        .limit(limit)
     )
     return result.scalars().all()
 

@@ -19,12 +19,12 @@ export function formatDate(dateStr) {
 
 export function getStatusColor(status) {
   const colors = {
-    OK: 'text-emerald-600 bg-emerald-50 border-emerald-200',
-    LOW: 'text-amber-600 bg-amber-50 border-amber-200',
-    CRITICAL: 'text-red-600 bg-red-50 border-red-200',
-    EXCESS: 'text-sky-600 bg-sky-50 border-sky-200',
+    OK: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
+    LOW: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+    CRITICAL: 'text-red-400 bg-red-500/10 border-red-500/30',
+    EXCESS: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
   };
-  return colors[status] || 'text-slate-600 bg-slate-50 border-slate-200';
+  return colors[status] || 'text-slate-300 bg-slate-800/60 border-slate-700';
 }
 
 export function getStatusBadgeClass(status) {

@@ -11,8 +11,9 @@ class OverviewMetrics(BaseModel):
     total_states: int
     total_sales: float
     avg_daily_sales: float
-    date_range: str
+    date_range: list[str]
     n_time_series: int
+    total_revenue: float = 0.0
 
 
 class SalesTrendPoint(BaseModel):

@@ -13,6 +13,7 @@ class InventoryRecommendation(Base):
     __tablename__ = "inventory_recommendations"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    organization_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     dataset_id: Mapped[str] = mapped_column(String(36), ForeignKey("datasets.id"), nullable=True)
     forecast_id: Mapped[str] = mapped_column(String(36), ForeignKey("forecast_headers.id"), nullable=True)
     item_id: Mapped[str] = mapped_column(String(100), nullable=False, index=True)

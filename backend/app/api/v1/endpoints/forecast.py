@@ -1,21 +1,21 @@
-"""Forecast generation and history endpoints."""
+"""Forecast generation and history endpoints (org-scoped, MySQL-backed)."""
 
 import uuid
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-import pandas as pd
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user
+from app.core.dependencies import get_current_user, get_current_org
 from app.schemas.forecast import (
     ForecastGenerateRequest, ForecastHeaderResponse, ForecastDetailResponse,
     ForecastHistoryResponse, ForecastRecord,
 )
 from app.models.user import User
+from app.models.organization import Organization
 from app.models.forecast import ForecastHeader, Forecast
-from app.models.dataset import Dataset
 from app.services.forecasting import DemandForecaster
+from app.services.data_service import TenantDataService
 
 router = APIRouter()
 
@@ -24,24 +24,22 @@ router = APIRouter()
 async def generate_forecast(
     request: ForecastGenerateRequest,
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Generate a demand forecast for a specific product/store combination."""
-    # Load data
-    try:
-        data_path = "data/processed/engineered_features.csv"
-        df = pd.read_csv(data_path)
-        df["date"] = pd.to_datetime(df["date"])
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Processed data not found. Upload and process data first.")
+    """Generate a demand forecast for a specific product/store combination (org-scoped)."""
+    # Load the org's data from MySQL — not the shared CSV
+    df = await TenantDataService.load_sales_df(db, org.id)
+    if df.empty:
+        raise HTTPException(status_code=404, detail="No data for this organization. Upload or ingest data first.")
 
     # Filter for the requested item + store
     item_store_data = df[(df["item_id"] == request.item_id) & (df["store_id"] == request.store_id)].sort_values("date")
     if len(item_store_data) == 0:
         raise HTTPException(status_code=404, detail=f"No data found for {request.item_id} at {request.store_id}")
 
-    # Train or load model
-    model_path = "models/best_model.joblib"
+    # Train or load the org's model
+    model_path = f"models/{org.id}/best_model.joblib"
     try:
         forecaster = DemandForecaster()
         forecaster.load_model(model_path)
@@ -56,8 +54,9 @@ async def generate_forecast(
     if len(forecast_df) == 0:
         raise HTTPException(status_code=500, detail="Forecast generation returned no data")
 
-    # Save forecast header
+    # Save forecast header (org-scoped)
     header = ForecastHeader(
+        organization_id=org.id,
         model_type=forecaster.model_type,
         horizon_days=request.horizon_days,
         item_count=1,
@@ -100,11 +99,15 @@ async def generate_forecast(
 @router.get("/history", response_model=ForecastHistoryResponse)
 async def forecast_history(
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Get forecast generation history."""
+    """Get forecast generation history for the active org."""
     result = await db.execute(
-        select(ForecastHeader).order_by(ForecastHeader.created_at.desc()).limit(50)
+        select(ForecastHeader)
+        .where(ForecastHeader.organization_id == org.id)
+        .order_by(ForecastHeader.created_at.desc())
+        .limit(50)
     )
     headers = result.scalars().all()
     return ForecastHistoryResponse(
@@ -117,10 +120,16 @@ async def forecast_history(
 async def get_forecast(
     forecast_id: str,
     db: AsyncSession = Depends(get_db),
+    org: Organization = Depends(get_current_org),
     current_user: User = Depends(get_current_user),
 ):
-    """Get full forecast details including all predictions."""
-    result = await db.execute(select(ForecastHeader).where(ForecastHeader.id == forecast_id))
+    """Get full forecast details including all predictions (org-scoped)."""
+    result = await db.execute(
+        select(ForecastHeader).where(
+            ForecastHeader.id == forecast_id,
+            ForecastHeader.organization_id == org.id,
+        )
+    )
     header = result.scalar_one_or_none()
     if not header:
         raise HTTPException(status_code=404, detail="Forecast not found")

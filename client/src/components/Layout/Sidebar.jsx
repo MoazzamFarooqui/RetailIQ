@@ -1,9 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import {
-  LayoutDashboard, BarChart3, TrendingUp, Package, Brain, Sparkles,
-  Upload, LogOut, ChevronLeft, ChevronRight, ShieldCheck,
-} from 'lucide-react';
+import { LayoutDashboard, BarChart3, TrendingUp, Package, Brain, Sparkles, Upload, LogOut, ChevronLeft, ChevronRight, ShieldCheck, Store, Boxes, Bot, AlertTriangle, FileText, Database, ArrowLeftRight, Activity } from 'lucide-react';
 import { useState } from 'react';
 
 const NAV_GROUPS = [
@@ -12,38 +9,51 @@ const NAV_GROUPS = [
     items: [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
       { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-    ],
+      { to: '/forecast', label: 'Forecast', icon: TrendingUp },
+    ]
+  },
+  {
+    label: 'Management',
+    items: [
+      { to: '/model-insights', label: 'Model Insights', icon: Brain },
+      { to: '/inventory', label: 'Inventory', icon: Package },
+      { to: '/stores', label: 'Stores', icon: Store },
+      { to: '/products', label: 'Products', icon: Boxes },
+      { to: '/upload', label: 'Upload Data', icon: Upload },
+    ]
   },
   {
     label: 'Intelligence',
     items: [
-      { to: '/forecast', label: 'Forecast', icon: TrendingUp },
-      { to: '/inventory', label: 'Inventory', icon: Package },
-      { to: '/model-insights', label: 'Model Insights', icon: Brain },
       { to: '/ai-insights', label: 'AI Insights', icon: Sparkles },
-    ],
+      { to: '/advisor', label: 'Advisor', icon: Bot },
+      { to: '/what-if', label: 'What-If Analysis', icon: Activity },
+    ]
   },
   {
-    label: 'Data',
+    label: 'Monitoring',
     items: [
-      { to: '/upload', label: 'Upload Data', icon: Upload },
-    ],
-  },
+      { to: '/alerts', label: 'Alerts', icon: AlertTriangle },
+      { to: '/data-health', label: 'Data Health', icon: ShieldCheck },
+      { to: '/reports', label: 'Reports', icon: FileText },
+      { to: '/model-insights', label: 'Model History', icon: Database },
+    ]
+  }
 ];
 
 function BrandMark({ collapsed }) {
   return (
-    <div className={`flex items-center gap-3 px-4 h-16 border-b border-slate-100 ${collapsed ? 'justify-center' : ''}`}>
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-600 flex items-center justify-center text-white shadow-soft flex-shrink-0">
-        <svg width="18" height="18" viewBox="0 0 64 64" fill="none">
-          <path d="M16 44 V20 M32 44 V12 M48 44 V28" stroke="#fff" strokeWidth="9" strokeLinecap="round" />
-          <circle cx="32" cy="44" r="6" fill="#fff" />
+    <div className={`flex items-center gap-3 px-4 h-20 border-b border-stone-100 ${collapsed ? 'justify-center' : ''}`}>
+      <div className="w-9 h-9 rounded-xl bg-stone-900 flex items-center justify-center text-white shadow-sm flex-shrink-0">
+        <svg width="18" height="18" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <path d="M16 44 V20 M32 44 V12 M48 44 V28" stroke="currentColor" strokeWidth="9" strokeLinecap="round" />
+          <circle cx="32" cy="44" r="6" fill="currentColor" />
         </svg>
       </div>
       {!collapsed && (
         <div className="min-w-0">
-          <div className="font-bold text-lg text-slate-900 leading-tight tracking-tight">RetailIQ</div>
-          <div className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">Intelligence Suite</div>
+          <div className="font-semibold text-lg text-stone-900 leading-tight tracking-[-0.04em]">RetailIQ</div>
+          <div className="text-[10px] font-medium text-stone-400 uppercase tracking-widest">Intelligence Suite</div>
         </div>
       )}
     </div>
@@ -53,16 +63,16 @@ function BrandMark({ collapsed }) {
 function UserCard({ user, collapsed }) {
   if (!user || collapsed) return null;
   return (
-    <div className="mx-3 mt-4 p-3 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100/60 border border-slate-200/80">
+    <div className="mx-3 mt-4 p-3 rounded-xl bg-stone-50 border border-stone-100">
       <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-500 to-emerald-600 flex items-center justify-center text-white text-sm font-bold shadow-sm flex-shrink-0">
+        <div className="w-9 h-9 rounded-lg bg-[#E4E4E7] flex items-center justify-center text-[#18181B] text-sm font-bold flex-shrink-0">
           {user.username?.[0]?.toUpperCase() || 'U'}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-sm font-semibold text-slate-800 truncate">{user.username}</div>
-          <div className="text-[11px] text-slate-400 capitalize">{user.role}</div>
+          <div className="text-sm font-semibold text-stone-800 truncate">{user.username}</div>
+          <div className="text-[11px] text-stone-400 capitalize">{user.role}</div>
         </div>
-        <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,0.15)] flex-shrink-0" title="Online" />
+        <span className="w-2 h-2 rounded-full bg-[#18181B] shadow-[0_0_0_3px_rgba(24,24,27,0.12)] flex-shrink-0" title="Online" />
       </div>
     </div>
   );
@@ -77,13 +87,7 @@ function NavItem({ item, collapsed, isActive }) {
       end={item.end}
       title={collapsed ? item.label : undefined}
       className={({ isActive: active }) =>
-        `group flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
-          collapsed ? 'justify-center' : ''
-        } ${
-          active || isActive
-            ? 'bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-100'
-            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-        }`
+        `group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${collapsed ? 'justify-center' : ''} ${active || isActive ? 'bg-stone-900 text-white shadow-sm' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-100'}`
       }
     >
       <Icon className={`w-5 h-5 flex-shrink-0 transition-colors ${collapsed ? 'mx-auto' : ''}`} />
@@ -98,7 +102,7 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className={`${collapsed ? 'w-[68px]' : 'w-64'} transition-all duration-300 bg-white border-r border-slate-200 flex flex-col h-screen sticky top-0 z-30 flex-shrink-0`}>
+    <aside className={`${collapsed ? 'w-[68px]' : 'w-60'} transition-all duration-300 bg-white border-r border-stone-100 flex flex-col h-screen sticky top-0 z-30 flex-shrink-0`}>
       <BrandMark collapsed={collapsed} />
       <UserCard user={user} collapsed={collapsed} />
 
@@ -106,7 +110,7 @@ export default function Sidebar() {
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
             {!collapsed && (
-              <div className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <div className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                 {group.label}
               </div>
             )}
@@ -120,14 +124,14 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className={`border-t border-slate-100 p-3 space-y-1 ${collapsed ? 'text-center' : ''}`}>
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] text-slate-400 ${collapsed ? 'justify-center' : ''}`}>
+      <div className="border-t border-slate-800 p-3 space-y-1 ${collapsed ? 'text-center' : ''}">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] text-slate-500 ${collapsed ? 'justify-center' : ''}">
           <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
           {!collapsed && <span>Secure session</span>}
         </div>
         <button
           onClick={logout}
-          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition-all w-full ${collapsed ? 'justify-center' : ''}`}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all w-full ${collapsed ? 'justify-center' : ''}"
           title="Logout"
         >
           <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -135,8 +139,8 @@ export default function Sidebar() {
         </button>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="text-slate-300 hover:text-slate-500 transition-colors w-full flex justify-center pt-1"
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="text-slate-600 hover:text-slate-300 transition-colors w-full flex justify-center pt-1"
+          title="${collapsed ? 'Expand sidebar' : 'Collapse sidebar'}"
         >
           {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>

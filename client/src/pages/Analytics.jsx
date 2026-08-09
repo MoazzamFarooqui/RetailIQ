@@ -6,14 +6,17 @@ import { LoadingSpinner, ErrorState } from '../components/common/LoadingState';
 import { formatNumber } from '../utils/helpers';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, PieChart, Pie, Cell, Legend } from 'recharts';
 
-const COLORS = ['#2563EB', '#16A34A', '#D97706', '#DC2626', '#805AD5', '#0EA5E9'];
+// Monochrome charcoal palette for multi-category charts (grayscale scale)
+const COLORS = ['#18181b', '#52525b', '#a1a1aa', '#e4e4e7'];
 
 const tooltipStyle = {
   contentStyle: {
     borderRadius: '10px',
-    border: '1px solid #e2e8f0',
-    boxShadow: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+    border: '1px solid #e5e5df',
+    background: '#ffffff',
+    color: '#292925',
     fontSize: '12px',
+    boxShadow: '0 8px 24px -8px rgb(0 0 0 / 0.6)',
   },
 };
 
@@ -23,7 +26,7 @@ function ChartCard({ title, subtitle, children, right }) {
       <div className="flex items-start justify-between mb-4 gap-4">
         <div>
           <div className="content-section-title mb-0">{title}</div>
-          {subtitle && <div className="text-xs text-slate-400 mt-0.5">{subtitle}</div>}
+          {subtitle && <div className="text-xs text-slate-500 mt-0.5">{subtitle}</div>}
         </div>
         {right}
       </div>
@@ -98,11 +101,11 @@ export default function Analytics() {
       >
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={trend}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={{ stroke: '#e2e8f0' }} tickFormatter={v => new Date(v).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} />
-            <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} tickFormatter={v => formatNumber(v)} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e9e9e4" vertical={false} />
+            <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={{ stroke: '#1f2937' }} tickFormatter={v => new Date(v).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} />
+            <YAxis tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={false} tickFormatter={v => formatNumber(v)} />
             <Tooltip {...tooltipStyle} />
-            <Line type="monotone" dataKey="sales" stroke="#2563EB" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} name="Sales" />
+            <Line type="monotone" dataKey="sales" stroke="#18181b" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} name="Sales" />
           </LineChart>
         </ResponsiveContainer>
       </ChartCard>
@@ -112,11 +115,11 @@ export default function Analytics() {
         <ChartCard title="Top Products" subtitle="Highest-grossing items">
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={topProducts.slice(0, 8)} layout="vertical" margin={{ left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} tickFormatter={v => formatNumber(v)} />
-              <YAxis dataKey="item_id" type="category" width={100} tick={{ fontSize: 10, fill: '#475569' }} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e9e9e4" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={false} tickFormatter={v => formatNumber(v)} />
+              <YAxis dataKey="item_id" type="category" width={100} tick={{ fontSize: 10, fill: '#374151' }} tickLine={false} axisLine={false} />
               <Tooltip {...tooltipStyle} />
-              <Bar dataKey="total_sales" fill="#2563EB" radius={[0, 6, 6, 0]} name="Total Sales" />
+              <Bar dataKey="total_sales" fill="#18181b" radius={[0, 6, 6, 0]} name="Total Sales" />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -125,9 +128,9 @@ export default function Analytics() {
         <ChartCard title="Sales by Day of Week" subtitle="Average daily sales per weekday">
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={dayOfWeek}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-              <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={{ stroke: '#e2e8f0' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} tickFormatter={v => formatNumber(v)} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e9e9e4" vertical={false} />
+              <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={{ stroke: '#1f2937' }} />
+              <YAxis tick={{ fontSize: 11, fill: '#374151' }} tickLine={false} axisLine={false} tickFormatter={v => formatNumber(v)} />
               <Tooltip {...tooltipStyle} />
               <Bar dataKey="avg_sales" radius={[6, 6, 0, 0]} name="Avg Sales">
                 {dayOfWeek?.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
@@ -152,9 +155,9 @@ export default function Analytics() {
             <tbody>
               {stores?.map((s, i) => (
                 <tr key={i}>
-                  <td className="font-medium text-slate-800">
+                  <td className="font-medium text-white">
                     <span className="inline-flex items-center gap-2">
-                      <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-500 text-[11px] font-semibold flex items-center justify-center">{i + 1}</span>
+                      <span className="w-7 h-7 rounded-lg bg-slate-800/60 text-slate-400 text-[11px] font-semibold flex items-center justify-center">{i + 1}</span>
                       {s.store_id}
                     </span>
                   </td>

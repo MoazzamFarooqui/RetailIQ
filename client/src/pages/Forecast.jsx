@@ -8,10 +8,12 @@ import { TrendingUp, Calendar, Brain, Rocket } from 'lucide-react';
 
 const tooltipStyle = {
   contentStyle: {
-    borderRadius: '10px',
-    border: '1px solid #e2e8f0',
-    boxShadow: '0 8px 24px -8px rgb(15 23 42 / 0.18)',
+    borderRadius: '12px',
+    border: '1px solid #e5e5df',
+    background: '#ffffff',
+    color: '#292925',
     fontSize: '12px',
+    boxShadow: '0 8px 24px -8px rgb(0 0 0 / 0.6)',
   },
 };
 
@@ -43,7 +45,7 @@ export default function Forecast() {
   })) || [];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-8 animate-fade-in floating-container">
       <div className="page-header">
         <div>
           <h1 className="page-title">Forecast</h1>
@@ -51,9 +53,12 @@ export default function Forecast() {
         </div>
       </div>
 
-      {/* Config */}
+      {/* Config - Floating Panel */}
       <div className="content-section">
-        <div className="content-section-title">Forecast Configuration</div>
+        <div className="flex items-center gap-2 content-section-title">
+          <Brain className="w-5 h-5 text-neutral-900" />
+          Forecast Configuration
+        </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="field-label">Product ID</label>
@@ -97,30 +102,43 @@ export default function Forecast() {
       {/* Results */}
       {forecastResult && (
         <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard label="Total Forecast" value={formatNumber(Math.round(forecastResult.summary.total_forecast))} icon={TrendingUp} color="blue" />
-            <KpiCard label="Avg Daily" value={formatNumber(Math.round(forecastResult.summary.avg_daily))} icon={Calendar} color="green" />
-            <KpiCard label="Peak Day" value={formatDate(forecastResult.summary.peak_day)} sub={`${formatNumber(Math.round(forecastResult.summary.peak_value))} units`} icon={TrendingUp} color="orange" />
-            <KpiCard label="Model" value={forecastResult.header.model_type.replace('_', ' ')} icon={Brain} color="purple" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 section-gap">
+            <KpiCard label="Total Forecast" value={formatNumber(Math.round(forecastResult.summary.total_forecast))} icon={TrendingUp} aiInsight />
+            <KpiCard label="Avg Daily" value={formatNumber(Math.round(forecastResult.summary.avg_daily))} icon={Calendar} />
+            <KpiCard label="Peak Day" value={formatDate(forecastResult.summary.peak_day)} sub={`${formatNumber(Math.round(forecastResult.summary.peak_value))} units`} icon={TrendingUp} />
+            <KpiCard label="Model" value={forecastResult.header.model_type.replace('_', ' ')} icon={Brain} aiInsight />
           </div>
 
-          {/* Chart */}
-          <div className="content-section">
+          {/* Chart - Premium styling with indigo accent */}
+          <div className="content-section section-gap">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <div className="content-section-title mb-0">Forecast Visualization</div>
-                <div className="text-xs text-slate-400 mt-0.5">
+                <div className="flex items-center gap-2 content-section-title mb-0">
+                  <TrendingUp className="w-4 h-4 text-neutral-900" />
+                  Forecast Visualization
+                </div>
+                <div className="text-xs text-slate-500 mt-0.5">
                   Predicted daily demand for {itemId} · {storeId} · {horizon} days
                 </div>
+              </div>
+              <div className="chip-ai">
+                <Brain className="w-3.5 h-3.5" />
+                AI Generated
               </div>
             </div>
             <ResponsiveContainer width="100%" height={350}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={{ stroke: '#e2e8f0' }} tickFormatter={v => new Date(v).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} />
-                <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickLine={false} axisLine={false} />
+                <defs>
+                  <linearGradient id="forecastFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#18181b" stopOpacity={0.05} />
+                    <stop offset="100%" stopColor="#18181b" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e9e9e4" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} tickLine={false} axisLine={{ stroke: '#27272a' }} tickFormatter={v => new Date(v).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} />
+                <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} tickLine={false} axisLine={false} />
                 <Tooltip {...tooltipStyle} />
-                <Line type="monotone" dataKey="predicted_sales" stroke="#E53E3E" strokeWidth={2.5} dot={false} activeDot={{ r: 4 }} name="Forecast" />
+                <Line type="monotone" dataKey="predicted_sales" stroke="#18181b" strokeWidth={2.5} dot={false} activeDot={{ r: 4, fill: '#18181b' }} fill="url(#forecastFill)" name="Forecast" />
               </LineChart>
             </ResponsiveContainer>
           </div>

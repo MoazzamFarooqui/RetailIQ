@@ -5,9 +5,9 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class RegisterRequest(BaseModel):
-    email: str = Field(..., example="user@example.com")
-    username: str = Field(..., min_length=3, max_length=100, example="analyst1")
-    password: str = Field(..., min_length=8, example="securepassword123")
+    email: EmailStr
+    username: str = Field(..., min_length=3, max_length=100)
+    password: str = Field(..., min_length=8)
 
 
 class LoginRequest(BaseModel):
@@ -31,14 +31,25 @@ class UserResponse(BaseModel):
     username: str
     role: str
     is_active: bool
+    organization_id: str | None
     created_at: datetime
 
     model_config = {"from_attributes": True}
 
 
+class LoginResponse(TokenResponse):
+    """Token pair plus the user profile and active organization."""
+    user: UserResponse
+    organization: dict | None = None
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str = Field(..., min_length=8)
+
+
 class UserUpdateRequest(BaseModel):
-    email: str | None = None
-    username: str | None = None
-    role: str | None = None
+    email: EmailStr | None = None
+    username: str | None = Field(None, min_length=3, max_length=100)
     is_active: bool | None = None
-    password: str | None = None
+    password: str | None = Field(None, min_length=8)

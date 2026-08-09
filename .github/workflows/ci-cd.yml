@@ -48,10 +48,6 @@ jobs:
           --health-retries=3
 
     steps:
-<<<<<<< HEAD
-
-=======
->>>>>>> 25f81064bfd3123f20b700242992dfd2c70041bd
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -79,10 +75,6 @@ jobs:
         run: |
           pytest tests/ -v --timeout=60 || echo "No tests found yet"
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 25f81064bfd3123f20b700242992dfd2c70041bd
   # ── Build & Push Docker Image ──────────────────────────────────────────────
   build-and-push:
     if: github.ref == 'refs/heads/main'
@@ -95,10 +87,6 @@ jobs:
       packages: write
 
     steps:
-<<<<<<< HEAD
-
-=======
->>>>>>> 25f81064bfd3123f20b700242992dfd2c70041bd
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -123,9 +111,3 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-<<<<<<< HEAD
-
-
- 
-=======
->>>>>>> 25f81064bfd3123f20b700242992dfd2c70041bd

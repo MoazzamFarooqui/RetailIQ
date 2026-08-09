@@ -41,16 +41,23 @@ models/*
 *.db
 *.sqlite
 *.sqlite3
+celerybeat-schedule*
 
 # ── Temp upload ────────────────────────────────────────────────────────────────
 temp_upload.csv
 
 # ── Environment ────────────────────────────────────────────────────────────────
 .env
+.env.*
+!.env.example
 .venv/
 venv/
 env/
 ENV/
+
+# ── Backups (secrets) ───────────────────────────────────────────────────────────
+backup/rclone.conf
+backup/local/
 
 # ── IDE ────────────────────────────────────────────────────────────────────────
 .vscode/

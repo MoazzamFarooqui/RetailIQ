@@ -13,6 +13,7 @@ class ForecastHeader(Base):
     __tablename__ = "forecast_headers"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    organization_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     dataset_id: Mapped[str] = mapped_column(String(36), ForeignKey("datasets.id"), nullable=True)
     model_type: Mapped[str] = mapped_column(String(100), nullable=False)
     horizon_days: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -34,6 +35,7 @@ class Forecast(Base):
     __tablename__ = "forecasts"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    organization_id: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     header_id: Mapped[str] = mapped_column(String(36), ForeignKey("forecast_headers.id"), nullable=False)
     dataset_id: Mapped[str] = mapped_column(String(36), ForeignKey("datasets.id"), nullable=True)
     item_id: Mapped[str] = mapped_column(String(100), nullable=False, index=True)

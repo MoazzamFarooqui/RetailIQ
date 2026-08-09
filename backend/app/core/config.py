@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     # ── API Keys ──────────────────────────────────────────────────────────────
     OPENWEATHER_API_KEY: Optional[str] = None
     HOLIDAY_API_KEY: Optional[str] = None
+    # Claude API key for the AI Business Advisor (optional — advisor falls back
+    # to rule-based answers when unset).
+    ANTHROPIC_API_KEY: Optional[str] = None
 
     # ── Celery ────────────────────────────────────────────────────────────────
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
