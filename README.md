@@ -129,15 +129,31 @@ The platform is built as a modern two tier web application:
 
 ---
 
+## Upload Data & CSV Processing
+
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/5b1d5c28-8f7f-4ea2-be3a-7af1adfdcc89" />
+
+---
+
+## AI Business Insights
 
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/b8ee5e26-ee21-4fe3-b010-9630c1f50976" />
 
+---
+
+## Smart Business Advisor
+
 <img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/bd91872d-c707-457b-8c11-5765231f61c9" />
+
+---
+
+## Inventory What-If Simulator & Scenario Planning
 
 <img width="1917" height="968" alt="image" src="https://github.com/user-attachments/assets/057b65ff-c6e3-4031-930b-a480e6d2ef6e" />
 
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/0157d4ab-90c3-4fd2-a8ef-17c7c6ba96f4" />
+
+---
 
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/2ceba13b-ada8-4e4c-9c06-5f10f7e1a9c9" />
 
