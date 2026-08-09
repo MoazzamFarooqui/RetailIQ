@@ -157,4 +157,3 @@ volumes:
 networks:
   retailiq-network:
     driver: bridge
-
