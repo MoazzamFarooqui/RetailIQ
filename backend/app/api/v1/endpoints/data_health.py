@@ -43,3 +43,4 @@ async def anomalies(
 
     all_anomalies = sales_anomalies + txn_anomalies
     return AnomalyReport(anomalies=[Anomaly(**a) for a in all_anomalies], total=len(all_anomalies))
+

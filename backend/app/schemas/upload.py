@@ -37,3 +37,4 @@ class ValidationResult(BaseModel):
     sales_stats: dict | None = None
     warnings: list[str] = []
     errors: list[str] = []
+

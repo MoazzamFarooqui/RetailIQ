@@ -153,3 +153,4 @@ export const opsService = {
   retryJob: (id) => api.post(`/ops/jobs/${id}/retry`),
   templates: () => api.get('/ops/task-templates'),
 };
+

@@ -204,3 +204,4 @@ class InsightsEngine:
             "pre_holiday_window": pre_window,
             "upcoming_holidays": upcoming.to_dict("records") if len(upcoming) > 0 else [],
         }
+

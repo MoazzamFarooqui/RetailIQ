@@ -77,3 +77,4 @@ def bulk_inventory_task(self, dataset_id: str, params: dict):
     except Exception as e:
         logger.error(f"Bulk inventory task failed: {e}")
         return {"status": "error", "dataset_id": dataset_id, "error": str(e)}
+

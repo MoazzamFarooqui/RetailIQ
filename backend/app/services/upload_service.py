@@ -225,3 +225,4 @@ class DataValidator:
             logger.info(f"Removed {before - len(df)} duplicate rows")
 
         return df
+

@@ -132,3 +132,4 @@ def evaluate_forecast_df(forecast_df: pd.DataFrame, actual_df: pd.DataFrame,
         rows.append(row)
 
     return pd.DataFrame(rows)
+

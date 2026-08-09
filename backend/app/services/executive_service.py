@@ -131,3 +131,4 @@ class ExecutiveService:
             "actions": actions,
             "generated_at": datetime.now().isoformat(),
         }
+

@@ -66,3 +66,4 @@ class DataPreprocessor:
         df["date"] = pd.to_datetime(df["date"])
         df["sales"] = pd.to_numeric(df["sales"], errors="coerce").fillna(0)
         return df
+

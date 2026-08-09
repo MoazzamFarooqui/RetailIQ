@@ -88,3 +88,4 @@ def auto_retrain_task(self):
     except Exception as e:
         logger.error(f"Auto-retrain task failed: {e}")
         return {"status": "error", "message": str(e)}
+

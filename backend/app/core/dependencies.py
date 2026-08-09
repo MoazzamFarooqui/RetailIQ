@@ -190,3 +190,4 @@ DbSession = Annotated[AsyncSession, Depends(get_db)]
 CurrentUser = Annotated[User, Depends(get_current_user)]
 CurrentOrg = Annotated[Organization, Depends(get_current_org)]
 RedisClient = Annotated[Redis, Depends(get_redis)]
+

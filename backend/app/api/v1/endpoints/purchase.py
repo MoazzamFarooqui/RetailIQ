@@ -222,3 +222,4 @@ async def what_if_simulation(
         deltas=deltas,
         top_changes=top_changes,
     )
+

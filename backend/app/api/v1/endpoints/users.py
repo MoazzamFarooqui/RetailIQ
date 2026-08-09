@@ -74,3 +74,4 @@ async def update_user(
     await db.flush()
     await db.refresh(user)
     return user
+

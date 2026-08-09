@@ -63,3 +63,4 @@ def run_alert_detection_task(self):
     except Exception as e:
         logger.error(f"Alert detection task failed: {e}")
         return {"status": "error", "message": str(e)}
+

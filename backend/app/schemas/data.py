@@ -25,3 +25,4 @@ class OrgDataSummary(BaseModel):
     date_start: str | None
     date_end: str | None
     days_covered: int
+

@@ -88,3 +88,4 @@ async def get_season_context():
         pre_holiday_window=pre_window if pre_window else None,
         upcoming_holidays=upcoming.to_dict("records") if len(upcoming) > 0 else [],
     )
+

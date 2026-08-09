@@ -35,3 +35,4 @@ class Sale(Base):
 
     def __repr__(self) -> str:
         return f"<Sale {self.product_id}@{self.store_id} {self.sale_date}: {self.quantity}>"
+

@@ -368,3 +368,4 @@ class WeatherService:
         if "rain" in condition.lower() or season == "Monsoon":
             multiplier *= 1.1
         return multiplier
+

@@ -54,3 +54,4 @@ class TrainResponse(BaseModel):
     task_id: str | None = None
     message: str
     is_async: bool = True
+

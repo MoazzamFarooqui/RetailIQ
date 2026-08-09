@@ -209,3 +209,4 @@ class IntelligenceService:
         for item_id in df["item_id"].unique():
             products.append(IntelligenceService.product_intelligence(df, item_id))
         return sorted(products, key=lambda p: p.get("total_sales", 0), reverse=True)
+

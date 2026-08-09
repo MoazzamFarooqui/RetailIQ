@@ -438,3 +438,4 @@ async def accept_invitation(
         role=invitation.role,
         user_id=user.id,
     )
+

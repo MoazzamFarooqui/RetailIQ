@@ -95,3 +95,4 @@ async def init_db():
 async def close_db():
     """Dispose of the engine connection pool."""
     await engine.dispose()
+

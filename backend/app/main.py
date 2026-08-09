@@ -57,3 +57,4 @@ async def health_check():
 async def metrics():
     payload, content_type = metrics_response()
     return Response(content=payload, media_type=content_type)
+

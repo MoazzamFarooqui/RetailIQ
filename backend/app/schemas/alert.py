@@ -25,3 +25,4 @@ class AlertCounts(BaseModel):
     unread: int
     critical: int
     high: int
+

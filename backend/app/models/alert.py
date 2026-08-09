@@ -77,3 +77,4 @@ class NotificationDelivery(Base):
 
     def __repr__(self) -> str:
         return f"<NotificationDelivery {self.channel.value} → {self.recipient}: {self.status}>"
+

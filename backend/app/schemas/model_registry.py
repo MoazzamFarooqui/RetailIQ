@@ -90,3 +90,4 @@ class RegistryOverview(BaseModel):
     total_versions: int
     degraded: bool
     needs_retrain: bool
+

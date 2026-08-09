@@ -356,3 +356,4 @@ class ModelRegistryService:
             return False
         improvement = (act_wape - cand_wape) / act_wape
         return improvement >= MIN_IMPROVEMENT_TO_PROMOTE
+

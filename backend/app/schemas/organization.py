@@ -87,3 +87,4 @@ class InviteAcceptResponse(BaseModel):
     organization_name: str
     role: str
     user_id: str
+

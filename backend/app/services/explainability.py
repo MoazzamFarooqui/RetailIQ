@@ -108,3 +108,4 @@ class ModelExplainer:
             shap_vals[feature] = {"value": val, "shap_value": sv}
         shap_vals = dict(sorted(shap_vals.items(), key=lambda x: abs(x[1]["shap_value"]), reverse=True))
         return {"prediction": pred, "base_value": ev, "shap_values": shap_vals}
+

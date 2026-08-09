@@ -252,3 +252,4 @@ class InventoryOptimizer:
                     "action": "Reduce stock",
                 }
         return {"alert": "normal", "season": season, "message": "", "action": ""}
+

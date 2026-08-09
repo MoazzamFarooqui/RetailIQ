@@ -46,3 +46,4 @@ class Organization(Base):
 
     def __repr__(self) -> str:
         return f"<Organization {self.name} ({self.slug})>"
+

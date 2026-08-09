@@ -49,3 +49,4 @@ class Forecast(Base):
 
     def __repr__(self) -> str:
         return f"<Forecast {self.item_id}@{self.store_id} {self.forecast_date}: {self.predicted_sales:.2f}>"
+

@@ -75,3 +75,4 @@ class WhatIfResponse(BaseModel):
     scenario: dict  # the parameters that changed
     deltas: dict  # e.g. {"total_inventory_value": -5000, "items_to_reorder": -12}
     top_changes: list[dict]  # items with the biggest absolute change
+

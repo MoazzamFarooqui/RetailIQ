@@ -266,3 +266,4 @@ class AlertService:
         return len((await db.execute(
             select(Alert).where(Alert.organization_id == org_id, Alert.is_read == False)  # noqa: E712
         )).scalars().all())
+

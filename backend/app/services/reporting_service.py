@@ -254,3 +254,4 @@ class ReportingService:
             pdf.multi_cell(0, 6, ReportingService._pdf_safe(report["advisor_answer"]))
 
         return bytes(pdf.output())
+

@@ -60,3 +60,4 @@ class OverstockItem(BaseModel):
     days_of_stock: float
     excess_units: float
     reason: str
+

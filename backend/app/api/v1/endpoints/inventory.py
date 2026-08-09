@@ -137,3 +137,4 @@ async def get_demand_multiplier():
 async def get_seasonal_advice():
     """Get seasonal product advice and holiday stock recommendations."""
     return {"advice": InventoryOptimizer.get_holiday_stock_advice()}
+

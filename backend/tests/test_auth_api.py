@@ -176,3 +176,4 @@ def test_role_gate_enforced(client):
         "email": "someone@retailiq.com", "role": "viewer",
     }, headers=viewer_headers)
     assert r.status_code == 403, r.text
+

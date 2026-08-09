@@ -65,3 +65,4 @@ class WebhookSource(Base):
 
     def __repr__(self) -> str:
         return f"<WebhookSource {self.name} ({'active' if self.is_active else 'inactive'})>"
+

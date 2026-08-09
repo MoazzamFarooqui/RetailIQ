@@ -30,3 +30,4 @@ class Product(Base):
 
     def __repr__(self) -> str:
         return f"<Product {self.sku} ({self.name})>"
+

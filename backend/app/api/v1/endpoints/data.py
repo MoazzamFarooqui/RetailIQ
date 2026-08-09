@@ -234,3 +234,4 @@ async def revoke_webhook_source(
         raise HTTPException(status_code=404, detail="Webhook not found")
     source.is_active = False
     await db.commit()
+

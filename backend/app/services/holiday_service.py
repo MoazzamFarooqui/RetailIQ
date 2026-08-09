@@ -295,3 +295,4 @@ class HolidayService:
                     df.loc[mask, "in_eid_window"] = 1
 
         return df
+

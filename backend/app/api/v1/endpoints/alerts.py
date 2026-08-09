@@ -95,3 +95,4 @@ async def trigger_detection(
     counts = await AlertService.run_all_detectors(db, org.id, decisions_df, sales_df, active_model)
     await db.commit()
     return {"status": "ok", "created": counts}
+

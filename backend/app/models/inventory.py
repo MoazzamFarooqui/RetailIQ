@@ -36,3 +36,4 @@ class InventoryRecommendation(Base):
 
     def __repr__(self) -> str:
         return f"<InventoryRecommendation {self.item_id}@{self.store_id}: {self.status}>"
+

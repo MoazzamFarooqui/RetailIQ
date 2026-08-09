@@ -127,3 +127,4 @@ def generate_daily_insights(self):
     except Exception as e:
         logger.error(f"Daily insights task failed: {e}")
         return {"status": "error", "message": str(e)}
+

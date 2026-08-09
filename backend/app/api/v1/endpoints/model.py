@@ -155,3 +155,4 @@ async def get_feature_importance(
         FeatureImportance(feature=row["feature"], importance=float(row["importance"]))
         for _, row in importance.iterrows()
     ]
+

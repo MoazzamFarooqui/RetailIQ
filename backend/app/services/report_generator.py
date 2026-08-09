@@ -112,3 +112,4 @@ class ReportGenerator:
                     f.write(f"Total forecast: {forecast_df['predicted_sales'].sum():.2f}\n")
 
         return filepath
+

@@ -154,3 +154,4 @@ class FeatureEngineer:
         df = self.create_rolling_features(df)
         logger.info(f"Feature engineering complete: {df.shape}")
         return df
+

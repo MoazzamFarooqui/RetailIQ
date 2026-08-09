@@ -209,3 +209,4 @@ class PurchaseDecisionEngine(InventoryOptimizer):
         decisions = engine.generate_purchase_decisions(df, demand_multiplier=demand_multiplier)
         summary = engine.financial_summary(decisions)
         return decisions, summary
+

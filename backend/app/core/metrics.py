@@ -78,3 +78,4 @@ def metrics_response():
         "retailiq_metrics_enabled 0\n",
         "text/plain; version=0.0.4; charset=utf-8",
     )
+

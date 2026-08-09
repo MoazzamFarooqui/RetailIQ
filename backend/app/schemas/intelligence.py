@@ -80,3 +80,4 @@ class ProductIntelligence(BaseModel):
     forecast_accuracy: dict | None = None
     days_covered: int | None = None
     error: str | None = None
+

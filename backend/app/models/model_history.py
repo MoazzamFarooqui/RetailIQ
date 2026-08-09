@@ -37,3 +37,4 @@ class ModelHistory(Base):
 
     def __repr__(self) -> str:
         return f"<ModelHistory {self.model_type} (MAE={self.mae:.2f})>"
+

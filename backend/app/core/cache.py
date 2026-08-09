@@ -96,3 +96,4 @@ def cached(ttl: int = 300, key_prefix: str = ""):
             return result
         return wrapper
     return decorator
+

@@ -33,3 +33,4 @@ class Invitation(Base):
 
     def __repr__(self) -> str:
         return f"<Invitation {self.email} → {self.organization_id} ({self.status.value})>"
+

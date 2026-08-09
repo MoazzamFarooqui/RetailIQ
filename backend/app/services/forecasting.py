@@ -374,3 +374,4 @@ class DemandForecaster:
         self.feature_names = model_data.get("feature_names")
         self.model_type = model_data.get("model_type", "random_forest")
         logger.info(f"Model loaded from {filepath} ({self.model_type})")
+

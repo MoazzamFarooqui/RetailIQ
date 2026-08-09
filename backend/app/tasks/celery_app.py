@@ -51,3 +51,4 @@ def debug_task(self):
     """Debug task to verify Celery is working."""
     print(f"Request: {self.request!r}")
     return {"status": "ok", "message": "Celery is running"}
+

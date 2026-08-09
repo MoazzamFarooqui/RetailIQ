@@ -261,3 +261,4 @@ class AdvisorService:
                 lines.append("Open alerts: " + "; ".join(a["title"] for a in alerts[:3]))
 
         return "\n".join(lines)
+

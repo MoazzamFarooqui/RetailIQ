@@ -75,3 +75,4 @@ async def get_current_holiday_context(
         "demand_multiplier_reasons": demand_mult["reasons"],
         "upcoming_holidays": holiday_svc.get_upcoming_holidays(now, limit=3).to_dict("records"),
     }
+

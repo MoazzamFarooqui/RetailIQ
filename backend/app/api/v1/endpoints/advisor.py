@@ -81,3 +81,4 @@ async def advisor_snapshot(
     """Inspect the data snapshot the advisor uses as grounding (dev/debug)."""
     snapshot = await AdvisorService.build_snapshot(db, org)
     return snapshot
+
