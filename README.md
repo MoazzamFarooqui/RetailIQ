@@ -76,6 +76,8 @@ The platform is built as a modern two tier web application:
 
 <img width="1202" height="378" alt="image" src="https://github.com/user-attachments/assets/ebc7061b-2376-451f-93fa-6c091cbc2b77" />
 
+<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/a215e72f-6e90-46e6-92ae-25b8b1b35523" />
+
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/6e02f530-5ed0-401d-bb4d-2b216b85da48" />
 
 <img width="1207" height="360" alt="image" src="https://github.com/user-attachments/assets/b89ece9b-7d35-461f-83d8-ba69be5f5115" />
