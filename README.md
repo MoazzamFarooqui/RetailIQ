@@ -62,6 +62,58 @@ The platform is built as a modern two tier web application:
 
 ---
 
+# Screenshots
+
+<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/7b756f59-ce09-45b5-9a58-edc137d6718e" />
+
+<img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/3cd8776d-adf3-4376-a269-8c2f7d232ec1" />
+
+<img width="1916" height="692" alt="image" src="https://github.com/user-attachments/assets/5a03d3ce-11e5-4c62-bef0-0f5bac503f62" />
+
+<img width="1251" height="380" alt="image" src="https://github.com/user-attachments/assets/e07940e4-37d1-4cf7-923a-d4574466b6be" />
+
+<img width="1197" height="667" alt="image" src="https://github.com/user-attachments/assets/11881414-f26d-4d1b-a19f-b272f2471645" />
+
+<img width="1202" height="378" alt="image" src="https://github.com/user-attachments/assets/ebc7061b-2376-451f-93fa-6c091cbc2b77" />
+
+<img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/6e02f530-5ed0-401d-bb4d-2b216b85da48" />
+
+<img width="1207" height="360" alt="image" src="https://github.com/user-attachments/assets/b89ece9b-7d35-461f-83d8-ba69be5f5115" />
+
+<img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/6667a1d3-5a53-4ef9-917f-646d8c45aa80" />
+
+<img width="1917" height="867" alt="image" src="https://github.com/user-attachments/assets/66260b7b-459c-42dd-8ca3-d769bb609a0a" />
+
+<img width="1192" height="380" alt="image" src="https://github.com/user-attachments/assets/ec480db9-2f4f-4a9f-9e25-666d248cb5aa" />
+
+<img width="1907" height="762" alt="image" src="https://github.com/user-attachments/assets/7cfb4c15-56e4-42d0-8670-f21d3c8a2557" />
+
+<img width="1202" height="455" alt="image" src="https://github.com/user-attachments/assets/9fa8b70d-c066-4fa8-af95-b0f9b4dc0f42" />
+
+<img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/724018f8-7acb-4dec-860f-83433d12e178" />
+
+<img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/5b1d5c28-8f7f-4ea2-be3a-7af1adfdcc89" />
+
+<img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/b8ee5e26-ee21-4fe3-b010-9630c1f50976" />
+
+<img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/bd91872d-c707-457b-8c11-5765231f61c9" />
+
+<img width="1917" height="968" alt="image" src="https://github.com/user-attachments/assets/057b65ff-c6e3-4031-930b-a480e6d2ef6e" />
+
+<img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/0157d4ab-90c3-4fd2-a8ef-17c7c6ba96f4" />
+
+<img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/2ceba13b-ada8-4e4c-9c06-5f10f7e1a9c9" />
+
+<img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/d75b1860-b72b-421a-b292-3cc7512b3f87" />
+
+<img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/85f4ca02-e671-4be8-a3b7-57fbce810b73" />
+
+<img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/e232ac67-af86-43c1-9a3c-55c58cc68484" />
+
+<img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/09ab48a0-bd72-4fb2-8819-95cb2a08580d" />
+
+---
+
 # Features
 
 ### Data Upload & Auto Processing
