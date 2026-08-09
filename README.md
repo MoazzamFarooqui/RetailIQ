@@ -89,17 +89,29 @@ The platform is built as a modern two tier web application:
 
 ---
 
+## Predictive Analytics & Forecasting
+
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/a215e72f-6e90-46e6-92ae-25b8b1b35523" />
 
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/6e02f530-5ed0-401d-bb4d-2b216b85da48" />
 
 <img width="1207" height="360" alt="image" src="https://github.com/user-attachments/assets/b89ece9b-7d35-461f-83d8-ba69be5f5115" />
 
+---
+
+## Model Insights & Explainability
+
 <img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/6667a1d3-5a53-4ef9-917f-646d8c45aa80" />
+
+---
+
+## Inventory Intelligence
 
 <img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/87e4092b-7c15-422c-ae9b-14f65af7455a" />
 
 <img width="1917" height="867" alt="image" src="https://github.com/user-attachments/assets/66260b7b-459c-42dd-8ca3-d769bb609a0a" />
+
+---
 
 <img width="1192" height="380" alt="image" src="https://github.com/user-attachments/assets/ec480db9-2f4f-4a9f-9e25-666d248cb5aa" />
 
