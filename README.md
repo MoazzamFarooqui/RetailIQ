@@ -141,17 +141,21 @@ The platform is built as a modern two tier web application:
 
 ---
 
-### Data Upload & Management
+## Smart Business Advisor
 
 <img width="1917" height="963" alt="image" src="https://github.com/user-attachments/assets/bd91872d-c707-457b-8c11-5765231f61c9" />
 
-<img width="1917" height="968" alt="image" src="https://github.com/user-attachments/assets/057b65ff-c6e3-4031-930b-a480e6d2ef6e" />
+---
 
-### Authentication & Application
+## What-If Analysis
+
+<img width="1917" height="968" alt="image" src="https://github.com/user-attachments/assets/057b65ff-c6e3-4031-930b-a480e6d2ef6e" />
 
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/0157d4ab-90c3-4fd2-a8ef-17c7c6ba96f4" />
 
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/2ceba13b-ada8-4e4c-9c06-5f10f7e1a9c9" />
+
+---
 
 <img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/d75b1860-b72b-421a-b292-3cc7512b3f87" />
 
