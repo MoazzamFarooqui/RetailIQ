@@ -149,19 +149,31 @@ The platform is built as a modern two tier web application:
 
 ## What-If Analysis
 
-<img width="1917" height="968" alt="image" src="https://github.com/user-attachments/assets/057b65ff-c6e3-4031-930b-a480e6d2ef6e" />
-
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/0157d4ab-90c3-4fd2-a8ef-17c7c6ba96f4" />
 
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/2ceba13b-ada8-4e4c-9c06-5f10f7e1a9c9" />
 
 ---
 
+## Smart Alerts & Monitoring
+
 <img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/d75b1860-b72b-421a-b292-3cc7512b3f87" />
+
+---
+
+## Data Health Center
 
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/85f4ca02-e671-4be8-a3b7-57fbce810b73" />
 
+---
+
+## Automated Reports
+
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/e232ac67-af86-43c1-9a3c-55c58cc68484" />
+
+---
+
+## Model Performance & Insights
 
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/09ab48a0-bd72-4fb2-8819-95cb2a08580d" />
 
