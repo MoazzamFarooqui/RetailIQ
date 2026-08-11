@@ -129,9 +129,17 @@ The platform is built as a modern two tier web application:
 
 ---
 
+## Upload Data & CSV Processing
+
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/5b1d5c28-8f7f-4ea2-be3a-7af1adfdcc89" />
 
+---
+
+## AI Insights & Business Intelligence
+
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/b8ee5e26-ee21-4fe3-b010-9630c1f50976" />
+
+---
 
 ### Data Upload & Management
 
