@@ -64,13 +64,21 @@ The platform is built as a modern two tier web application:
 
 # Screenshots
 
+## Login & Authentication
+
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/7b756f59-ce09-45b5-9a58-edc137d6718e" />
+
+---
+
+## Executive Dashboard
 
 <img width="1917" height="966" alt="image" src="https://github.com/user-attachments/assets/3cd8776d-adf3-4376-a269-8c2f7d232ec1" />
 
-<img width="1916" height="692" alt="image" src="https://github.com/user-attachments/assets/5a03d3ce-11e5-4c62-bef0-0f5bac503f62" />
+---
 
-### Analytics
+## Sales Trends & Analytics
+
+<img width="1916" height="692" alt="image" src="https://github.com/user-attachments/assets/5a03d3ce-11e5-4c62-bef0-0f5bac503f62" />
 
 <img width="1251" height="380" alt="image" src="https://github.com/user-attachments/assets/e07940e4-37d1-4cf7-923a-d4574466b6be" />
 
@@ -78,11 +86,15 @@ The platform is built as a modern two tier web application:
 
 <img width="1202" height="378" alt="image" src="https://github.com/user-attachments/assets/ebc7061b-2376-451f-93fa-6c091cbc2b77" />
 
-### Forecasting
+---
+
+## Demand Forecasting
 
 <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/a215e72f-6e90-46e6-92ae-25b8b1b35523" />
 
 <img width="1917" height="965" alt="image" src="https://github.com/user-attachments/assets/6e02f530-5ed0-401d-bb4d-2b216b85da48" />
+
+---
 
 <img width="1207" height="360" alt="image" src="https://github.com/user-attachments/assets/b89ece9b-7d35-461f-83d8-ba69be5f5115" />
 
