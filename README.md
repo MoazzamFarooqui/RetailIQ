@@ -354,7 +354,7 @@ Create a `.env` file in the project root, using `.env.example` as a reference:
 ```env
 # Application
 APP_NAME=RetailIQ API
-APP_VERSION=2.0.0
+APP_VERSION=3.0.0
 ENVIRONMENT=development
 DEBUG=true
 
