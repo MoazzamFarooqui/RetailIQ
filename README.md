@@ -115,17 +115,19 @@ The platform is built as a modern two tier web application:
 
 ---
 
-### Model Insights & Explainable AI
-
-<img width="1192" height="380" alt="image" src="https://github.com/user-attachments/assets/ec480db9-2f4f-4a9f-9e25-666d248cb5aa" />
+## Store Performance
 
 <img width="1907" height="762" alt="image" src="https://github.com/user-attachments/assets/7cfb4c15-56e4-42d0-8670-f21d3c8a2557" />
 
 <img width="1202" height="455" alt="image" src="https://github.com/user-attachments/assets/9fa8b70d-c066-4fa8-af95-b0f9b4dc0f42" />
 
-### AI Insights & Business Intelligence
+---
+
+## Product Performance
 
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/724018f8-7acb-4dec-860f-83433d12e178" />
+
+---
 
 <img width="1917" height="967" alt="image" src="https://github.com/user-attachments/assets/5b1d5c28-8f7f-4ea2-be3a-7af1adfdcc89" />
 
